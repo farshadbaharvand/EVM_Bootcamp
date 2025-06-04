@@ -158,7 +158,7 @@ Bob signs a document and sends it to Alice. Using Bob's public key, Alice verifi
 
 ---
 
-# 🔐 Hash Functions Cheatsheet
+# 🔐 Hash Functions
 
 ## 📘 What is a Hash Function?
 
@@ -243,6 +243,102 @@ d62c65bf0bcda32b57b277d9ad9f146e
 | Reversible       | ❌ No                    | ✅ Yes                     |
 | Purpose          | Integrity check, ID      | Confidentiality           |
 | Key Needed       | ❌ No                    | ✅ Yes (public/private key)|
+
+---
+
+# 🌲 Merkle Tree Cheatsheet
+
+## 📘 What is a Merkle Tree?
+
+A **Merkle Tree** (or **hash tree**) is a binary tree structure used to efficiently and securely verify the contents of large data structures.
+
+- Each **leaf node** contains the cryptographic hash of a data block.
+- Each **non-leaf node** contains the hash of its two child nodes.
+- The **root node** (Merkle root) summarizes all the data in the tree.
+
+---
+
+## 🧱 Structure of a Merkle Tree
+
+```
+        Root Hash
+        /      \
+     HashA     HashB
+     /  \       /  \
+ H1   H2     H3   H4
+```
+
+- H1, H2, H3, H4 are hashes of individual data blocks.
+- HashA = hash(H1 + H2)
+- HashB = hash(H3 + H4)
+- Root = hash(HashA + HashB)
+
+---
+
+## 🎯 Key Properties
+
+1. **Efficient Verification**
+   - Only a small number of hashes are needed to verify any leaf node.
+   - Useful for lightweight clients in blockchains.
+
+2. **Tamper Detection**
+   - Any change to a leaf will change the root hash, revealing tampering.
+
+3. **Compact Proofs (Merkle Proofs)**
+   - You can prove the inclusion of a data element without revealing the entire dataset.
+
+4. **Scalability**
+   - Supports large data structures and enables parallel verification.
+
+---
+
+## 🔍 Merkle Proof (Inclusion Proof)
+
+To prove a leaf is part of the tree:
+- Provide the leaf hash.
+- Provide the **sibling hashes** on the path to the root.
+
+### Example:
+To verify H3 in the tree above, you provide:
+- H3 (the leaf)
+- H4 (sibling)
+- HashA (uncle hash from other side)
+
+Then you compute:
+- HashB = hash(H3 + H4)
+- Root = hash(HashA + HashB)
+
+Compare it to the known Merkle root.
+
+---
+
+## 🧪 Applications of Merkle Trees
+
+- **Blockchain (Bitcoin, Ethereum)**
+  - Transactions in a block are hashed into a Merkle Tree.
+  - Only the Merkle root is stored in the block header.
+
+- **Merkle Proofs in Light Clients**
+  - Used to verify transactions without downloading full blocks.
+
+- **Distributed Systems**
+  - Verify integrity of files and data across nodes.
+
+- **Git Version Control**
+  - Git uses Merkle-like trees to manage and verify file versions.
+
+---
+
+## 🔐 Security Benefits
+
+- **Immutability**
+  - A single change in data causes a change in the Merkle root.
+
+- **Integrity**
+  - Ensures the data has not been altered.
+
+- **Efficiency**
+  - Quick verification with logarithmic complexity.
 
 ---
 
