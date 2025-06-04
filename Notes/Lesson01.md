@@ -459,7 +459,7 @@ These reduced gas fees and improved transaction throughput.
 
 ---
 
-# 📘 Blockchain Fundamentals Cheatsheet
+# 📘 Blockchain Fundamentals 
 
 ---
 
