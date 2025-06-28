@@ -1,54 +1,54 @@
-# 🔍 Etherscan
+#    Etherscan
 
 Etherscan is a block explorer and analytics platform for Ethereum. It provides insights into blocks, transactions, contracts, and more. It's also a tool for developers to interact with smart contracts and verify deployments.
 
 ---
 
-## 🧱 Core Features
+##    Core Features
 
-### 📦 Blocks
+###    Blocks
 - View mined blocks and their details: miner, gas used, timestamp, and included transactions.
 
-### 🔄 Transactions
+###    Transactions
 - Inspect individual transactions, including:
   - Sender and recipient
   - Gas fees
   - Contract calls
   - Status (success or failure)
 
-### 📊 Statistics
+###    Statistics
 - Track Ethereum network activity, including:
   - Gas prices
   - Block time
   - Transaction throughput
   - ETH supply and market data
 
-### 📜 Smart Contracts
+###    Smart Contracts
 - View contract source code (if verified)
 - Review ABI, bytecode, and compiler version
 - Check contract creator and deployment info
 
-### 🧪 Testnet Faucets
+###    Testnet Faucets
 - Etherscan provides access to faucets for acquiring testnet ETH.
 - Example: [Sepolia Faucet](https://sepolia.etherscan.io/)
 
 ---
 
-## ✍️ Interacting with Smart Contracts
+##    Interacting with Smart Contracts
 
-### 🔗 Web3 Wallet Integration
+###    Web3 Wallet Integration
 - Connect a wallet (e.g., MetaMask) directly on Etherscan.
 - Allows you to:
   - Read contract data (free)
   - Write to contracts (requires ETH or testnet ETH)
 
-### 📥 Write Functions
+###    Write Functions
 - Submit transactions by interacting with public/external contract methods.
 - Requires gas and appropriate permissions.
 
 ---
 
-## ✅ Verifying Smart Contracts
+## Verifying Smart Contracts
 
 ### Why Verify?
 - Not required but **highly recommended**:
@@ -68,7 +68,7 @@ Etherscan is a block explorer and analytics platform for Ethereum. It provides i
 
 ---
 
-## 🧑‍💻 Deployment Workflow Example
+##  Deployment Workflow Example
 
 1. **Initial Deployment** (e.g., via Remix or Hardhat)
 2. **Verification Step**
@@ -86,7 +86,7 @@ Etherscan is a block explorer and analytics platform for Ethereum. It provides i
 
 ---
 
-## 🔐 Getting an Etherscan API Key
+##  Getting an Etherscan API Key
 
 1. Create an account at [etherscan.io](https://etherscan.io)
 2. Navigate to **API Key** section in your dashboard.
@@ -96,13 +96,15 @@ Etherscan is a block explorer and analytics platform for Ethereum. It provides i
    - Hardhat/Foundry verification scripts
    - Analytics integrations
 
----# 🎵 Vibe Coding 
+---
+
+#  Vibe Coding 
 
 Vibe Coding is an intuitive and spontaneous style of programming focused on creativity and rapid prototyping, often without strict planning or structure. It's popular among artists, hackers, and learners exploring new ideas quickly.
 
 ---
 
-## ✅ Advantages
+##  Advantages
 
 - **Fast Prototyping**  
   Quickly implement ideas without worrying about structure or architecture.
@@ -124,7 +126,7 @@ Vibe Coding is an intuitive and spontaneous style of programming focused on crea
 
 ---
 
-## ❌ Disadvantages
+##  Disadvantages
 
 - **Technical Debt**  
   The resulting code usually requires significant cleanup and refactoring.
@@ -152,100 +154,39 @@ Vibe Coding is an intuitive and spontaneous style of programming focused on crea
 
 ---
 
-## 🎯 Best Use Cases
+##  Best Use Cases
 
-- 🚀 Hackathons and Game Jams  
+-  Hackathons and Game Jams  
   Perfect for fast, creative output under time constraints.
 
-- 🧪 Personal Projects and Experiments  
+-    Personal Projects and Experiments  
   Ideal when exploring ideas for fun or learning.
 
-- 📚 Learning New Technologies  
+-  Learning New Technologies  
   Great for rapid, hands-on experimentation without setup overhead.
 
-- 🧰 Early-Stage Prototypes  
+-  Early-Stage Prototypes  
   Build MVPs to test core ideas before scaling.
 
-- 🎨 Creative Coding and Art Projects  
+-  Creative Coding and Art Projects  
   Encourages expressive, free-form programming in artistic contexts.
 
----
-
-
-# 🧭 Etherscan 
-
-[Etherscan](https://etherscan.io) is a powerful block explorer and analytics platform for the Ethereum blockchain. It allows users to view details about transactions, smart contracts, tokens, and addresses.
 
 ---
 
-## 🔍 Core Features
+#  Solidity  – Part 1
 
-### 📦 Blocks
-- View mined blocks with block height, timestamp, and miner.
-- Inspect transactions included in each block.
-
-### 🔁 Transactions
-- Check status, gas usage, sender, receiver, and value transferred.
-- Includes contract interactions and internal transactions.
-
-### 📊 Statistics
-- Network metrics: gas prices, transaction volume, market cap, and more.
-
-### 📜 Contract Details
-- View verified source code, ABI, and bytecode.
-- Analyze events, functions, and storage.
+This section provides a concise introduction to basic Solidity syntax and structure, perfect for beginners learning smart contract development.
 
 ---
 
-## 🛠 Interacting with Contracts
-
-You can interact directly with smart contracts:
-
-- **Read Functions:** View data like balances or state variables.
-- **Write Functions:** Send transactions by connecting your Web3 wallet (e.g., MetaMask).
-- Make sure the contract is verified for easier interaction.
-
----
-
-## 💧 Faucets (for Testnets)
-
-- Use Etherscan-linked faucets to get testnet ETH (e.g., Sepolia).
-- Sepolia Faucet: [https://sepoliafaucet.com](https://sepoliafaucet.com)
-
----
-
-## 🔐 Verifying Contracts
-
-### Why Verify?
-- Builds trust with users.
-- Allows developers to read and interact with the contract more easily.
-
-### Methods
-- **Via Remix Plugin:**  
-  - Install the **Etherscan plugin** in Remix.
-  - Connect your Etherscan account (free tier available).
-  - Use your generated **API Key**.
-  - Verify after deploying directly from Remix.
-
-- **Via Etherscan Portal:**  
-  - Use the "Verify and Publish" tab on Etherscan contract page.
-  - Input compiler settings, source code, and license.
-
----
-
-# 📘 Solidity  – Part 1
-
-This cheatsheet provides a concise introduction to basic Solidity syntax and structure, perfect for beginners learning smart contract development.
-
----
-
-## 🧾 Introduction
+##  Introduction
 
 Solidity is a statically-typed, contract-oriented programming language designed for developing smart contracts on Ethereum.
 
 ---
 
-## 🛠 How to Define the Solidity Compiler Version
+##  How to Define the Solidity Compiler Version
 
 You specify the compiler version at the top of your Solidity file using the `pragma` keyword.
 
@@ -261,7 +202,7 @@ pragma solidity >0.7.6 <0.8.4;
 
 ---
 
-## 🧱 How to Define a Contract
+##    How to Define a Contract
 
 Solidity uses the `contract` keyword followed by the contract's name and curly braces to encapsulate its logic.
 
@@ -275,7 +216,7 @@ contract Score {
 
 ---
 
-## 📦 How to Declare a Variable in Solidity
+##    How to Declare a Variable in Solidity
 
 Solidity requires explicit type declaration due to its static typing system.
 
@@ -287,19 +228,19 @@ contract Score {
 }
 ```
 
-### ⚠️ Important Notes:
+###  Important Notes:
 - Solidity is **statically typed**, so you must declare a variable's type (e.g., `uint`, `address`, `string`) before the variable name.
 - All statements must **end with a semicolon** `;`.
 
 ---
 
-# 📘 Solidity Cheatsheet – Part 2
+#  Solidity  – Part 2
 
-This cheatsheet continues your Solidity journey, covering types, functions, modifiers, arrays, mappings, and structs.
+This section continues your Solidity journey, covering types, functions, modifiers, arrays, mappings, and structs.
 
 ---
 
-## 🔢 Unsigned Integer Types (`uint`)
+##  Unsigned Integer Types (`uint`)
 
 By default, `uint` is `uint256`, an unsigned 256-bit integer. You can specify bit length in 8-bit steps.
 
@@ -314,7 +255,7 @@ By default, `uint` is `uint256`, an unsigned 256-bit integer. You can specify bi
 
 ---
 
-## 🧮 Getters and Setters
+##  Getters and Setters
 
 To **read** and **write** a value from a contract, use getter and setter functions.
 
@@ -340,7 +281,7 @@ contract Score {
 
 ---
 
-## 🔐 Function Visibility
+##  Function Visibility
 
 | Visibility | Contract Itself | Derived Contracts | External Contracts | External Addresses |
 |------------|------------------|-------------------|--------------------|--------------------|
@@ -351,7 +292,7 @@ contract Score {
 
 ---
 
-## 📌 Mutability: `view` vs `pure`
+##  Mutability: `view` vs `pure`
 
 - `view`: only **reads** state.
 - `pure`: **no read** or **write** to state. Used for math/computations only.
@@ -391,7 +332,7 @@ modifier Fee(uint fee) {
 
 ---
 
-## 🏗 Constructor
+##  Constructor
 
 Executed once on deployment.
 
@@ -410,7 +351,7 @@ contract Score {
 
 ---
 
-## 🔁 Mappings
+##  Mappings
 
 Mappings associate key-value pairs.
 
@@ -435,7 +376,7 @@ function getUserScore(address user) public view returns (uint) {
 
 ---
 
-## 🧰 Arrays
+##  Arrays
 
 Two types:
 
@@ -457,7 +398,7 @@ uint score = all_possible_numbers[0];
 
 ---
 
-## 📦 Structs
+##    Structs
 
 Define custom types:
 
@@ -478,7 +419,7 @@ giver.amount = 2500;
 
 ---
 
-## 🧪 Struct Example with Array
+##    Struct Example with Array
 
 ```solidity
 pragma solidity ^0.8.0;
@@ -510,7 +451,7 @@ contract ListExample {
 
 ---
 
-## ✅ Tips and Best Practices
+##  Tips and Best Practices
 
 - Use `public` on variables/mappings for auto-getters
 - Always define visibility (`public`, `private`, etc.)

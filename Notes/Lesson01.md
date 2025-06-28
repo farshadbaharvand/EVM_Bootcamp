@@ -1,6 +1,6 @@
-# 🧾 Decentralised Systems
+# Decentralised Systems
 
-## ❌ Problems with Centralised Systems
+## Problems with Centralised Systems
 
 Centralised systems, especially in the context of monetary institutions, exhibit several weaknesses that decentralised systems aim to solve.
 
@@ -28,7 +28,7 @@ Centralised systems, especially in the context of monetary institutions, exhibit
 
 ---
 
-## 🎯 Goals of Decentralisation
+## Goals of Decentralisation
 
 Decentralised systems aim to address the flaws of centralised models by promoting:
 
@@ -55,7 +55,7 @@ Decentralised systems aim to address the flaws of centralised models by promotin
 
 In the 1970s, the early conceptual groundwork for blockchain technology began to emerge. The key focus during this period was on **security in digital communication**.
 
-### 🔐 Problem: Security!
+### Problem: Security!
 
 Two critical questions defined the era:
 
@@ -67,7 +67,7 @@ Two critical questions defined the era:
    - This is the problem of **authenticity**.
    - It led to the development of **digital signatures** and **public-key cryptography**.
 
-### 🔧 Technologies Developed
+### Technologies Developed
 
 - **Hash Functions**  
   E.g., SHA (Secure Hash Algorithm) family — used to verify data integrity.
@@ -82,18 +82,18 @@ These innovations laid the foundation for future systems like **blockchains**, w
 
 ---
 
-# 🔐 Cryptography Foundations
+# Cryptography Foundations
 
-## 📜 Pre-1970s: Symmetric Cryptography
+## Pre-1970s: Symmetric Cryptography
 
-### 🔑 Symmetric Key Encryption
+### Symmetric Key Encryption
 
 - **Definition**: Both sender and receiver share a **single secret key**.
 - **How it works**:
   - The same key is used for **both encryption and decryption**.
   - Example: Alice and Bob use the same key to encrypt/decrypt messages.
 
-### ⚠️ Problem: Key Management
+### Problem: Key Management
 
 How can Alice and Bob share a key:
 
@@ -104,11 +104,11 @@ How can Alice and Bob share a key:
 
 ---
 
-## 🚀 1970s Breakthrough: Asymmetric Cryptography
+## 1970s Breakthrough: Asymmetric Cryptography
 
 A major step forward came with the invention of **asymmetric cryptography** (also known as **public-key cryptography**).
 
-### 🔐 Public-Key Cryptography
+### Public-Key Cryptography
 
 - Two keys:
   - **Public Key**: Used for **encryption**.
@@ -117,7 +117,7 @@ A major step forward came with the invention of **asymmetric cryptography** (als
 
 ---
 
-## 🔁 Diffie-Hellman Key Exchange
+## Diffie-Hellman Key Exchange
 
 Developed to allow the creation of a **shared secret** between two parties without needing to share any private information.
 
@@ -126,23 +126,23 @@ Developed to allow the creation of a **shared secret** between two parties witho
   - Each party chooses a private color and mixes it with a public color.
   - After exchanging the mixes, they both arrive at the same final color—**the shared secret**.
 
-👉 See this [Guide](https://github.com/archit-p/simplest-oblivious-transfer) for a visual explanation.
+ See this [Guide](https://github.com/archit-p/simplest-oblivious-transfer) for a visual explanation.
 
 ---
 
-## ✍️ Digital Signatures
+##  Digital Signatures
 
 **Digital signatures** were invented to prove the **origin and integrity** of a message.
 
-### 📌 Purpose
+###  Purpose
 
 - To confirm that a message was indeed sent by the **holder of a specific private key**.
 
-### 📄 Example
+### Example
 
 Bob signs a document and sends it to Alice. Using Bob's public key, Alice verifies the signature.
 
-### ✅ Key Properties of Digital Signatures
+### Key Properties of Digital Signatures
 
 1. **Authenticity**  
    When Alice verifies the message using Bob’s **public key**, she knows **Bob signed it**.
@@ -158,16 +158,16 @@ Bob signs a document and sends it to Alice. Using Bob's public key, Alice verifi
 
 ---
 
-# 🔐 Hash Functions
+# Hash Functions
 
-## 📘 What is a Hash Function?
+## What is a Hash Function?
 
 A **hash function** is a mathematical algorithm that transforms an input (or "message") into a fixed-size string of bytes, typically appearing random.
 
 - The output is called a **hash** or **digest**.
 - Used in cryptography, data structures, digital signatures, and blockchains.
 
-### ✍️ Example
+### Example
 
 Input:
 ```
@@ -182,7 +182,7 @@ d62c65bf0bcda32b57b277d9ad9f146e
 
 ---
 
-## 🎯 Key Properties of Cryptographic Hash Functions
+## Key Properties of Cryptographic Hash Functions
 
 1. **Deterministic**  
    - Same input always gives the same output.
@@ -205,7 +205,7 @@ d62c65bf0bcda32b57b277d9ad9f146e
 
 ---
 
-## 🧱 Common Hash Functions
+## Common Hash Functions
 
 | Name      | Output Size | Common Use Cases                      |
 |-----------|-------------|----------------------------------------|
@@ -217,7 +217,7 @@ d62c65bf0bcda32b57b277d9ad9f146e
 
 ---
 
-## 🔗 Applications of Hash Functions
+## Applications of Hash Functions
 
 - **Digital Signatures**  
   Hash the message before signing for efficiency.
@@ -236,7 +236,7 @@ d62c65bf0bcda32b57b277d9ad9f146e
 
 ---
 
-## ⚠️ Hashing ≠ Encryption
+## Hashing ≠ Encryption
 
 | Feature         | Hashing                  | Encryption                |
 |------------------|--------------------------|----------------------------|
@@ -246,9 +246,9 @@ d62c65bf0bcda32b57b277d9ad9f146e
 
 ---
 
-# 🌲 Merkle Tree
+# Merkle Tree
 
-## 📘 What is a Merkle Tree?
+## What is a Merkle Tree?
 
 A **Merkle Tree** (or **hash tree**) is a binary tree structure used to efficiently and securely verify the contents of large data structures.
 
@@ -258,7 +258,7 @@ A **Merkle Tree** (or **hash tree**) is a binary tree structure used to efficien
 
 ---
 
-## 🧱 Structure of a Merkle Tree
+## Structure of a Merkle Tree
 
 ```
         Root Hash
@@ -275,7 +275,7 @@ A **Merkle Tree** (or **hash tree**) is a binary tree structure used to efficien
 
 ---
 
-## 🎯 Key Properties
+## Key Properties
 
 1. **Efficient Verification**
    - Only a small number of hashes are needed to verify any leaf node.
@@ -292,7 +292,7 @@ A **Merkle Tree** (or **hash tree**) is a binary tree structure used to efficien
 
 ---
 
-## 🔍 Merkle Proof (Inclusion Proof)
+## Merkle Proof (Inclusion Proof)
 
 To prove a leaf is part of the tree:
 - Provide the leaf hash.
@@ -312,7 +312,7 @@ Compare it to the known Merkle root.
 
 ---
 
-## 🧪 Applications of Merkle Trees
+## Applications of Merkle Trees
 
 - **Blockchain (Bitcoin, Ethereum)**
   - Transactions in a block are hashed into a Merkle Tree.
@@ -329,7 +329,7 @@ Compare it to the known Merkle root.
 
 ---
 
-## 🔐 Security Benefits
+## Security Benefits
 
 - **Immutability**
   - A single change in data causes a change in the Merkle root.
@@ -342,44 +342,44 @@ Compare it to the known Merkle root.
 
 ---
 
-# 🧾 Blockchain History Timeline
+# Blockchain History Timeline
 
-## 📅 1980s — Cryptographic Foundations
+## 1980s — Cryptographic Foundations
 
-### 🔒 David Chaum
+### David Chaum
 - **Blind Signatures**: Enabled signing of a message without knowing its content—important for digital privacy.
 - **DigiCash**: One of the first digital cash implementations based on cryptographic principles.
 
 ---
 
-## 📅 1990s — Early Digital Cash Concepts
+## 1990s — Early Digital Cash Concepts
 
-### 🕒 Timestamping Records
+### Timestamping Records
 - Enabled verifiable proof that a document existed at a specific time.
 
-### 👤 Key Figures
+### Key Figures
 - **Adam Back** – Invented **HashCash**, a proof-of-work system used for spam prevention, later influencing Bitcoin mining.
 - **Wei Dai** – Proposed **b-money**, an early concept for anonymous, distributed digital currency.
 
 ---
 
-## 📅 2000s — Peer-to-Peer and Digital Currency Experiments
+## 2000s — Peer-to-Peer and Digital Currency Experiments
 
-### 🌐 P2P Networks
+### P2P Networks
 - Examples: **Freenet**, **Gnutella**, **BitTorrent**.
 - Enabled decentralized file sharing and laid the groundwork for blockchain's distributed architecture.
 
-### 🧾 Further Attempts at Digital Cash
+### Further Attempts at Digital Cash
 > “The one thing that’s missing is a reliable e-cash, whereby on the internet you can transfer funds from A to B without A knowing B or B knowing A.”  
 > — *Milton Friedman, 1999*
 
-### 🧠 Visionaries
+### Visionaries
 - **Wei Dai** – *b-money* (1998)
 - **Nick Szabo** – *Bit Gold* (1998)
 
 ---
 
-## 📅 2008–2009 — The Birth of Bitcoin
+## 2008–2009 — The Birth of Bitcoin
 
 - **August 2008**: Domain **bitcoin.org** registered.
 - **October 2008**: Whitepaper *“Bitcoin: A Peer-to-Peer Electronic Cash System”* by **Satoshi Nakamoto** posted to a cryptography mailing list.
@@ -387,51 +387,51 @@ Compare it to the known Merkle root.
 
 ---
 
-## 📅 2010 — First Real-World Bitcoin Use
+## 2010 — First Real-World Bitcoin Use
 
 - **Laszlo Hanyecz** buys two Papa John’s pizzas for **10,000 BTC**.
 - Often referred to as the first known commercial Bitcoin transaction.
 
 ---
 
-## 📆 General Blockchain Milestones (2009–2024)
+## General Blockchain Milestones (2009–2024)
 
-### 📌 2014 — **Ethereum** launched
+### 2014 — **Ethereum** launched
 - Introduced smart contracts and a Turing-complete blockchain.
 
-### 📌 2017 — **ICO Boom**
+### 2017 — **ICO Boom**
 - Hundreds of Initial Coin Offerings launched; Ethereum became a major fundraising platform.
 
-### 📌 2018 — **Crypto Winter**
+### 2018 — **Crypto Winter**
 - Market crash after ICO hype; many projects failed.
 
-### 📌 2020 — **DeFi Summer**
+### 2020 — **DeFi Summer**
 - Explosive growth in Decentralized Finance platforms like Uniswap, Aave, Compound.
 
-### 📌 2021 — **NFT & Gaming Boom**
+### 2021 — **NFT & Gaming Boom**
 - Rise of NFTs (non-fungible tokens), metaverse, and play-to-earn games like Axie Infinity.
 
-### 📌 2022 — **Ethereum Merge**
+### 2022 — **Ethereum Merge**
 - Ethereum transitioned from Proof-of-Work to **Proof-of-Stake**, reducing energy consumption by over **99%**.
 
-### 📌 2022 — **Another Crypto Winter**
+### 2022 — **Another Crypto Winter**
 - Market downturn triggered by major collapses and global financial uncertainty.
 
 ---
 
-## 📅 Recent Events (2022–2024)
+## Recent Events (2022–2024)
 
-### 💥 May 2022 — **Terra Luna/UST Collapse**
+### May 2022 — **Terra Luna/UST Collapse**
 - Algorithmic stablecoin UST lost its peg.
 - Over **$60 billion** in value wiped out.
 
-### 💣 November 2022 — **FTX Collapse**
+### November 2022 — **FTX Collapse**
 - Crypto exchange FTX, run by **Sam Bankman-Fried**, collapsed amid fraud allegations.
 
-### 🔁 September 2022 — **Ethereum Merge**
+### September 2022 — **Ethereum Merge**
 - Ethereum officially switched to Proof-of-Stake consensus.
 
-### 🚀 2022–2023 — **Layer 2 Scaling Boom**
+### 2022–2023 — **Layer 2 Scaling Boom**
 - Growth of scaling solutions:
   - **Arbitrum**
   - **Optimism**
@@ -440,41 +440,41 @@ Compare it to the known Merkle root.
 
 These reduced gas fees and improved transaction throughput.
 
-### 🧾 January 2023 — **Bitcoin Ordinals**
+### January 2023 — **Bitcoin Ordinals**
 - Introduced NFT-like inscriptions on Bitcoin, sparking debate over network congestion and use.
 
-### ⚖️ 2023–2024 — **Regulatory Crackdowns**
+### 2023–2024 — **Regulatory Crackdowns**
 - U.S. SEC targeted major exchanges:
   - **Binance**
   - **Coinbase**
 - Increasing regulatory scrutiny worldwide.
 
-### 💼 January 2024 — **BlackRock Bitcoin ETF Approved**
+### January 2024 — **BlackRock Bitcoin ETF Approved**
 - SEC approved multiple **spot Bitcoin ETFs**.
 - Signaled institutional acceptance and large capital inflow.
 
-### 🤖 2024 — **AI + Crypto Convergence**
+### 2024 — **AI + Crypto Convergence**
 - Rise of AI-integrated crypto projects and tokens.
 - Significant institutional interest and trading volume observed.
 
 ---
 
-# 📘 Blockchain Fundamentals 
+# Blockchain Fundamentals 
 
 ---
 
-## 🧱 Introduction to Blockchain — Components
+## Introduction to Blockchain — Components
 
-### 🔁 Gossip Network
+### Gossip Network
 - Peer-to-peer communication where nodes spread data by relaying to their neighbors.
 
-### 📖 Shared Public Ledger
+### Shared Public Ledger
 - A distributed database where every node has a copy of the entire blockchain.
 
-### 🔐 Cryptography
+### Cryptography
 - Ensures secure transactions and participant authentication.
 
-### ✅ Resulting Properties
+### Resulting Properties
 - **Transparency**: Publicly verifiable state.
 - **Consensus-based Verifiability**
 - **Resilience**: Tolerant to partial node failures.
@@ -483,19 +483,19 @@ These reduced gas fees and improved transaction throughput.
 
 ---
 
-## 📜 Blockchain Timeline
+## Blockchain Timeline
 
-### 📅 1980s
+### 1980s
 - **David Chaum**
   - **Blind Signatures**
   - **DigiCash**
 
-### 📅 1990s
+### 1990s
 - **Timestamping Records**
 - **Adam Back** – HashCash
 - **Wei Dai** – B-Money
 
-### 📅 2000s
+### 2000s
 - **P2P Networks**: Freenet, Gnutella, BitTorrent
 - Early digital cash concepts:
   - *1998*: b-money – Wei Dai
@@ -504,17 +504,17 @@ These reduced gas fees and improved transaction throughput.
 
 ---
 
-## 🪙 Bitcoin & Beyond
+##  Bitcoin & Beyond
 
-### 🏁 Early Bitcoin History
+### Early Bitcoin History
 - **August 2008**: Domain *bitcoin.org* registered.
 - **October 2008**: Whitepaper posted.
 - **January 2009**: Bitcoin software released.
 
-### 🍕 First Real Transaction (2010)
+### First Real Transaction (2010)
 - Laszlo Hanyecz buys 2 pizzas for **10,000 BTC**.
 
-### 🧭 General Blockchain Events (2009–2024)
+### General Blockchain Events (2009–2024)
 - **2014**: Ethereum created
 - **2017**: ICO boom
 - **2018**: Crypto winter
@@ -525,7 +525,7 @@ These reduced gas fees and improved transaction throughput.
 
 ---
 
-## 🔥 Recent Blockchain Events
+## Recent Blockchain Events
 
 - **May 2022**: Terra Luna/UST collapse (~$60B loss)
 - **Nov 2022**: FTX collapse → Fraud allegations
@@ -538,23 +538,23 @@ These reduced gas fees and improved transaction throughput.
 
 ---
 
-## 🧠 Consensus in Distributed Systems
+## Consensus in Distributed Systems
 
-### ❓ Why Consensus?
+### Why Consensus?
 To solve:
 - **Double Spending Problem**: Reuse of same digital tokens.
 - **Tampering & Ordering Issues** in an open network.
 
 ---
 
-## ⚔️ Byzantine Fault Tolerance (BFT)
+## Byzantine Fault Tolerance (BFT)
 
 - Tolerates malfunctioning/malicious nodes.
 - Works even with imperfect network information.
 
 ---
 
-## ⏱ Synchronization Challenges
+## Synchronization Challenges
 
 - No global clock in decentralized systems.
 - Bitcoin & Ethereum: Mining gives ordering.
@@ -563,13 +563,13 @@ To solve:
 
 ---
 
-## 🔐 Consensus Mechanisms
+## Consensus Mechanisms
 
 ### Two Key Parts:
 1. **Sybil Resistance**: Prevents identity forgery.
 2. **Consensus Logic**: Reaches agreement on canonical state.
 
-### 💡 Common "Proof-of" Mechanisms
+### Common "Proof-of" Mechanisms
 - **Proof of Work**
 - **Proof of Stake**
 - **Proof of Authority**
@@ -581,7 +581,7 @@ To solve:
 
 ---
 
-## 🧱 Block Production & Finality
+## Block Production & Finality
 
 ### Leader Selection
 - PoW: Puzzle-solving race.
@@ -593,9 +593,9 @@ To solve:
 
 ---
 
-## 🔧 Example Consensus Mechanisms
+## Example Consensus Mechanisms
 
-### 🧪 pBFT — Practical Byzantine Fault Tolerance
+### pBFT — Practical Byzantine Fault Tolerance
 - **From Castro & Liskov (1999)**
 - **Requires**: `3f + 1` nodes to tolerate `f` faulty nodes.
 - Immediate finality: Once accepted, transaction is final.
@@ -608,27 +608,27 @@ To solve:
 
 ---
 
-## 🧱 Nakamoto Consensus
+## Nakamoto Consensus
 
 - Used in Bitcoin
 - Forks resolved by choosing the **heaviest chain** (most PoW)
 
 ---
 
-## ⚖️ Ethereum Proof of Stake (PoS)
+##  Ethereum Proof of Stake (PoS)
 
-### 🔐 Validator Eligibility
+###  Validator Eligibility
 - Stake required (ETH) to participate.
 - Randomized selection weighted by stake.
 - Slashing for malicious behavior.
 
-### 🔄 Dual-Part Consensus
+###  Dual-Part Consensus
 1. **LMD-GHOST**: Selects head of the chain.
 2. **Casper FFG**: Finalizes blocks for chain inclusion.
 
 ---
 
-## 🧊 Avalanche Consensus
+##  Avalanche Consensus
 
 - (Not elaborated in source, but known for probabilistic finality via repeated subsampled voting)
 
