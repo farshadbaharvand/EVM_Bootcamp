@@ -49,7 +49,7 @@ Decentralised systems aim to address the flaws of centralised models by promotin
 
 ---
 
-# 🧾 Blockchain Timeline
+#  Blockchain Timeline
 
 ## 🕰 1970s — The Foundations
 

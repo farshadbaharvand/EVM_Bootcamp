@@ -299,7 +299,7 @@ contract Score {
 
 ---
 
-## 🛡 Modifiers and Access Control
+## Modifiers and Access Control
 
 ### Restricting Function Access
 
@@ -347,7 +347,7 @@ contract Score {
 }
 ```
 
-> ❗ Before version 0.4.22, constructors used to match the contract name. This is deprecated in 0.5.0+.
+> Before version 0.4.22, constructors used to match the contract name. This is deprecated in 0.5.0+.
 
 ---
 
