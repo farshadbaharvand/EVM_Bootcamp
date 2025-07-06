@@ -28,6 +28,7 @@ contract Child1 is Owned {
     }
 }
 
+---
 
 
 ### Key Points
@@ -693,7 +694,6 @@ require(success, "Withdrawal failed");
 - OpenZeppelin's `ReentrancyGuard` contract provides a `nonReentrant` modifier to guard functions.
 
 ### Implementation
-```solidity
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
