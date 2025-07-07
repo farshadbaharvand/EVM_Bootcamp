@@ -956,13 +956,148 @@ To do this, pass the transaction hash returned by `writeContract` to the `public
 const receipt = await publicClient.waitForTransactionReceipt({ hash });
 ```
 
-This function:
+#### This function:
 
- Polls the network.
+- Polls the network.
 
- Resolves once the transaction is included in a block.
+- Resolves once the transaction is included in a block.
 
- Returns a detailed TransactionReceipt object.
+- Returns a detailed TransactionReceipt object.
+
+#### Example Usage
+
+```ts
+const receipt = await publicClient.waitForTransactionReceipt({ hash });
+
+console.log('Transaction confirmed in block:', receipt.blockNumber);
+console.log('Status:', receipt.status); // 'success' or 'reverted'
+console.log('Gas used:', receipt.gasUsed);
+
+```
 
 
- 
+#### Receipt Object
+- The returned TransactionReceipt contains:
+
+- status: Indicates 'success' or 'reverted'.
+
+- blockNumber: The block in which the transaction was included.
+
+- gasUsed: Amount of gas consumed.
+
+- logs: Any events emitted.
+
+- transactionHash, from, to, etc.
+
+### advanced Options
+#### confirmations
+```ts
+await publicClient.waitForTransactionReceipt({
+  hash,
+  confirmations: 3, // Wait for 3 blocks after inclusion
+});
+
+```
+Useful for applications that need higher finality guarantees, especially on chains prone to reorgs.
+
+#### onReplaced
+
+```ts
+await publicClient.waitForTransactionReceipt({
+  hash,
+  onReplaced: (replacement) => {
+    console.warn('Transaction was replaced:', replacement);
+  },
+});
+
+```
+
+This callback handles edge cases where:
+
+- A user "speeds up" a pending transaction.
+
+- A user "cancels" it via their wallet.
+
+It provides details about the replacement transaction, helping your app react appropriately.
+
+
+## Final Notes
+-  This step completes the transaction lifecycle: simulate → write → wait.
+-  Use the receipt to trigger UI updates, backend events, analytics, or notifications.
+- Always inspect receipt.status to confirm success before assuming the transaction was effective.
+
+
+### With these three steps — simulateContract, writeContract, and waitForTransactionReceipt — Viem provides a safe, reliable, and modern approach to writing Ethereum dApps.
+
+
+## Complete End-to-End Example
+The following code block provides a complete, commented example of the entire simulate -> write -> wait cycle, cementing this robust pattern.
+
+```javascript
+import {
+  createPublicClient,
+  createWalletClient,
+  http,
+  parseGwei,
+} from 'viem';
+import { mainnet } from 'viem/chains';
+import { privateKeyToAccount } from 'viem/accounts';
+import { storageAbi } from './abi'; // Assuming a simple Storage contract ABI
+
+async function main() {
+  // 1. Setup Clients and Account
+  const account = privateKeyToAccount(process.env.PRIVATE_KEY as `0x${string}`);
+  
+  const publicClient = createPublicClient({
+    chain: mainnet,
+    transport: http(process.env.QUICKNODE_ENDPOINT),
+  });
+
+  const walletClient = createWalletClient({
+    account,
+    chain: mainnet,
+    transport: http(process.env.QUICKNODE_ENDPOINT),
+  });
+
+  const contractAddress = '0xYourDeployedContractAddress';
+
+  // 2. Step 1: Simulate the transaction
+  console.log('Simulating transaction...');
+  let request;
+  try {
+    const { request: simRequest } = await publicClient.simulateContract({
+      account,
+      address: contractAddress,
+      abi: storageAbi,
+      functionName: 'store',
+      args:, // Store a random number
+    });
+    request = simRequest;
+    console.log('Simulation successful!');
+  } catch (err) {
+    console.error('Transaction simulation failed:', err);
+    return;
+  }
+
+  // 3. Step 2: Write the transaction
+  console.log('Sending transaction...');
+  const hash = await walletClient.writeContract(request);
+  console.log('Transaction hash:', hash);
+
+  // 4. Step 3: Wait for the transaction receipt
+  console.log('Waiting for transaction receipt...');
+  const receipt = await publicClient.waitForTransactionReceipt({ hash });
+  console.log('Transaction confirmed!');
+  console.log('Status:', receipt.status);
+  console.log('Block Number:', receipt.blockNumber.toString());
+}
+
+main().catch(console.error);
+
+```
+
+
+ This three-step process is a deliberate architectural pattern that decouples transaction validation, submission, and confirmation.
+
+This separation leads to applications that are significantly safer by preventing failed transactions, more responsive by providing immediate UI feedback, and more robustly designed.
+
