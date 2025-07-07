@@ -1506,3 +1506,171 @@ To contextualise the advantages of this modern stack, the following table compar
 | Performance & Bundle Size | Highly optimised. viem is minimalist and tree-shakable, leading to tiny front-end bundle sizes. Features fast encoding and parsing algorithms. | ethers.js is more monolithic, resulting in a larger bundle size. Performance is robust for general use but not as optimised for front-end bundle size concerns. |
 | State Management     | Built-in via TanStack Query. Sophisticated caching, request deduplication, and persistence are core, out-of-the-box features. | Not included. The developer is responsible for implementing a state management solution from scratch, adding complexity and potential for error. |
 | Ecosystem & Stability | A modern, rapidly growing ecosystem with robust UI kits like ConnectKit and RainbowKit. Actively maintained full-time by its creators. | Mature, battle-tested, and stable with a large, established community. ethers.js is framework-agnostic, making it versatile but less tailored for React. |
+
+
+---
+
+
+# Quick Project Setup and Configuration
+## Installation
+Install wagmi and its required peer dependencies: viem and @tanstack/react-query.
+```bash
+npm install wagmi viem@2.x @tanstack/react-query
+```
+## Configuration
+- Create a central configuration file, for example, config.ts.
+
+- Use the createConfig function to define supported chains and the transport method for communication.
+
+```javascript
+import { http, createConfig } from 'wagmi'
+import { mainnet, sepolia } from 'wagmi/chains'
+
+export const config = createConfig({
+  chains: [mainnet, sepolia],
+  transports: {
+    [mainnet.id]: http(),
+    [sepolia.id]: http(),
+  },
+})
+```
+
+## Application Providers
+- Wrap the application's root component with WagmiProvider and QueryClientProvider.
+
+- This makes the wagmi configuration and TanStack Query client available to the entire component tree.
+
+```javascript
+import { WagmiProvider } from 'wagmi'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { config } from './config'
+
+const queryClient = new QueryClient()
+
+function App() {
+  return (
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        {/* Your Application Components */}
+      </QueryClientProvider>
+    </WagmiProvider>
+  )
+}
+```
+## Building a Wallet Connection Component
+## Core Hooks
+- useAccount: Provides information about the connected account, such as address and connection status.
+
+- useConnect: Returns a function to initialise a wallet connection and a list of available connectors.
+
+- useDisconnect: Returns a function to terminate the current wallet session.
+
+- useBalance: Fetches the native token balance for a specified address.
+
+## Example Component
+- This component displays a "Connect Wallet" button.
+
+- Once connected, it shows the user's address, balance, and a "Disconnect" button.
+
+```javascript
+import { useAccount, useConnect, useDisconnect, useBalance } from 'wagmi'
+import { injected } from 'wagmi/connectors'
+
+export function WalletComponent() {
+  const { address, isConnected } = useAccount()
+  const { data: balance } = useBalance({ address })
+  const { connect } = useConnect()
+  const { disconnect } = useDisconnect()
+
+  if (isConnected) {
+    return (
+      <div>
+        <p>Connected Address: {address}</p>
+        <p>Balance: {balance?.formatted} {balance?.symbol}</p>
+        <button onClick={() => disconnect()}>
+          Disconnect
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <button onClick={() => connect({ connector: injected() })}>
+      Connect Wallet
+    </button>
+  )
+}
+```
+
+## Interacting with Smart Contracts
+## Reading from a Contract
+- Use the useReadContract hook for view or pure functions that do not require a transaction.
+
+- Provide the contract's address, abi, functionName, and any required args.
+
+
+```javascript
+import { useReadContract } from 'wagmi'
+import { contractAbi } from './abi'
+
+const contractAddress = '0x...' // Address of the deployed contract
+
+export function ReadContractComponent() {
+  const { data, isPending, error } = useReadContract({
+    address: contractAddress,
+    abi: contractAbi,
+    functionName: 'totalSupply',
+  })
+
+  if (isPending) return <div>Loading...</div>
+  if (error) return <div>Error: {error.shortMessage}</div>
+  
+  return <div>Total Supply: {data?.toString()}</div>
+}
+```
+## Writing to a Contract
+- Use the useWriteContract hook for functions that change state and require a transaction.
+
+- This hook returns a writeContract function that you call to initialise the transaction.
+
+- Use the useWaitForTransactionReceipt hook to monitor the transaction's confirmation status.
+
+```javascript
+import * as React from 'react'
+import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
+import { contractAbi } from './abi'
+
+const contractAddress = '0x...' // Address of the deployed contract
+
+export function WriteContractComponent() {
+  const { data: hash, isPending, writeContract } = useWriteContract()
+
+  function submit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    writeContract({
+      address: contractAddress,
+      abi: contractAbi,
+      functionName: 'mint',
+      args: [1n], // Example: minting one token
+    })
+  }
+
+  const { isLoading: isConfirming, isSuccess: isConfirmed } = 
+    useWaitForTransactionReceipt({ hash })
+
+  return (
+    <form onSubmit={submit}>
+      <button type="submit" disabled={isPending |
+| isConfirming}>
+        {isPending? 'Confirming...' : isConfirming? 'Minting...' : 'Mint NFT'}
+      </button>
+      {hash && <div>Transaction Hash: {hash}</div>}
+      {isConfirmed && <div>Transaction successful!</div>}
+    </form>
+  )
+}
+```
+
+
+---
+
