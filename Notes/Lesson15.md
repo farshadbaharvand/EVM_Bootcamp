@@ -1101,3 +1101,408 @@ main().catch(console.error);
 
 This separation leads to applications that are significantly safer by preventing failed transactions, more responsive by providing immediate UI feedback, and more robustly designed.
 
+# Engaging with Contract Events
+
+Smart contract events are a crucial mechanism for communicating information from the blockchain to off-chain applications.
+
+Viem provides a powerful and flexible API for both listening to live events in real-time and querying historical event logs.
+
+---
+
+## Listening for Live Events: `watchContractEvent`
+
+To subscribe to events as they are emitted by a contract, Viem offers the `publicClient.watchContractEvent` action.
+
+This function sets up a listener that polls the blockchain and invokes a callback function whenever new events are detected.
+
+### Features and Configuration
+
+- **All Events or Specific Events:**  
+  You can watch all events emitted by a contract or filter by a specific `eventName`.
+
+- **Filter by Indexed Arguments:**  
+  For more granular control, the listener can filter events based on the values of their **indexed arguments** using the `args` parameter.
+
+- **Callback Function:**  
+  The callback function is triggered each time a matching event is found.
+
+### Resource Management
+
+A critical feature of this action is its explicit handling of resources:
+
+- `watchContractEvent` returns an **`unwatch` function**.
+- You **must call `unwatch()`** when the listener is no longer needed (e.g., when a user navigates away from a page or component).
+- This prevents **memory leaks** and unnecessary blockchain polling.
+
+This explicit resource management reflects Viem’s architectural philosophy of clarity and safety.
+
+---
+
+### Example: Listening for a Transfer Event
+
+```typescript
+import { createPublicClient, http } from 'viem';
+import { mainnet } from 'viem/chains';
+import { erc20Abi } from './abi';
+
+const publicClient = createPublicClient({
+  chain: mainnet,
+  transport: http(),
+});
+
+const unwatch = publicClient.watchContractEvent({
+  address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', // DAI token address
+  abi: erc20Abi,
+  eventName: 'Transfer',
+  args: {
+    from: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045', // vitalik.eth
+  },
+  onLogs: (logs) => {
+    console.log('New Transfer event:', logs);
+  },
+});
+
+// Later, when you want to stop listening:
+unwatch();
+
+```
+#### In this example:
+
+- We listen for Transfer events emitted by the DAI contract.
+
+- We filter for events where the from address is Vitalik's account.
+
+- When such events occur, the onLogs callback is triggered.
+
+- unwatch() is stored so that we can stop listening when necessary.
+
+By using watchContractEvent, developers can create responsive, event-driven dApps that react to blockchain activity in real-time, while maintaining full control over resource usage.
+### Example
+
+The following example demonstrates how to watch for Transfer events from an ERC-20 token contract:
+```javascript
+import { publicClient } from './client';
+import { erc20Abi } from './abi';
+
+console.log('Watching for Transfer events...');
+
+const unwatch = publicClient.watchContractEvent({
+  address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', // DAI Stablecoin
+  abi: erc20Abi,
+  eventName: 'Transfer',
+  onLogs: (logs) => {
+    console.log('New Transfer event(s) detected:', logs);
+    logs.forEach(log => {
+      // The 'args' property is fully typed thanks to the ABI
+      const { from, to, value } = log.args;
+      console.log(`  - From: `${from}, To: $`{to}, Value: ${value}`);
+    });
+  },
+  onError: (error) => {
+    console.error('Error watching events:', error);
+  }
+});
+
+// To stop watching after a certain period (e.g., 60 seconds):
+setTimeout(() => {
+  unwatch();
+  console.log('Stopped watching for events.');
+}, 60000);
+
+```
+
+This design is also fault-tolerant. The documentation notes that watchContractEvent will intelligently attempt to use the most efficient underlying RPC method available, eth_newFilter, but will automatically and seamlessly fall back to the more universally supported eth_getLogs method if the connected RPC provider does not support filters.
+
+This provides a high-performance yet stable experience for the developer without requiring complex conditional logic.
+
+# Querying Historical Events
+
+For applications that need to retrieve **past event logs**, Viem provides a **two-step process** that is both powerful and efficient.
+
+---
+
+## Step 1: Create a Filter — `createContractEventFilter`
+
+The first step is to **create a filter object** using the `createContractEventFilter` action.
+
+This function allows for **precise specification** of the desired logs, including:
+
+- **`eventName`** – the specific event to filter for.
+- **`args`** – the values of any indexed event parameters.
+- **`fromBlock` / `toBlock`** – the range of blocks over which to search.
+
+This structured approach allows fine-grained control over what logs are returned, minimizing unnecessary data retrieval.
+
+---
+
+## Step 2: Retrieve Logs — `getFilterLogs`
+
+After creating a filter, pass it to the `getFilterLogs` action.
+
+This action queries the node and returns an **array of all matching log entries**, each representing an emitted event that satisfies the filter’s criteria.
+
+---
+
+### Example: Querying Past `Transfer` Events
+
+```typescript
+import { createPublicClient, http } from 'viem';
+import { mainnet } from 'viem/chains';
+import { erc20Abi } from './abi';
+
+const publicClient = createPublicClient({
+  chain: mainnet,
+  transport: http(),
+});
+
+const filter = await publicClient.createContractEventFilter({
+  address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', // DAI token
+  abi: erc20Abi,
+  eventName: 'Transfer',
+  args: {
+    from: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+  },
+  fromBlock: 19000000n,
+  toBlock: 'latest',
+});
+
+const logs = await publicClient.getFilterLogs({ filter });
+
+console.log('Historical logs:', logs);
+```
+
+#### Key Advantages
+- Efficiency: Only relevant logs are fetched based on precise filters.
+
+- Scalability: The block range parameters (fromBlock, toBlock) allow querying small or large periods of time as needed.
+
+- Indexed Arguments: Filters can be further narrowed using indexed parameters, reducing the volume of returned data and improving performance.
+
+By using createContractEventFilter and getFilterLogs, developers can build features such as transaction history views, analytics dashboards, and audit trails that rely on past blockchain activity — all while maintaining performance and control.
+
+### This example demonstrates how to fetch all Transfer events to a specific address within the last 100 blocks:
+```javascript
+import { publicClient } from './client';
+import { erc20Abi } from './abi';
+
+async function fetchHistoricalTransfers() {
+  const toAddress = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'; // vitalik.eth
+  const currentBlock = await publicClient.getBlockNumber();
+
+  // 1. Create the event filter
+  const filter = await publicClient.createContractEventFilter({
+    address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', // DAI
+    abi: erc20Abi,
+    eventName: 'Transfer',
+    args: {
+      to: toAddress,
+    },
+    fromBlock: currentBlock - 100n,
+    toBlock: currentBlock,
+  });
+
+  // 2. Get the logs matching the filter
+  const logs = await publicClient.getFilterLogs({ filter });
+
+  console.log(`Found `${logs.length} incoming transfers to $`{toAddress} in the last 100 blocks.`);
+  console.log(logs);
+}
+
+fetchHistoricalTransfers().catch(console.error);
+```
+
+# The `getContract` Instance: An Alternative Interaction Model
+
+While Viem's primary interaction pattern is **functional and stateless** (e.g., `client.readContract(...)`), it also provides an alternative, more **object-oriented model**. This model is particularly helpful for developers transitioning from libraries like Ethers.js. It is made possible using the `getContract` utility.
+
+---
+
+## Creating a Contract Instance
+
+The `getContract` function creates a **contract instance** that bundles together:
+
+- The contract's **address**
+- Its **ABI** (Application Binary Interface)
+- One or more **client objects** (PublicClient and/or WalletClient)
+
+This setup simplifies code reuse and eliminates the need to repeatedly pass the same parameters.
+
+You can create:
+
+- A **read-only** instance using a `PublicClient`
+- A **write-enabled** instance using a `WalletClient`
+- Or a **fully featured** instance using both
+
+```ts
+import { getContract } from 'viem';
+import { publicClient, walletClient } from './client';
+import { storageAbi } from './abi';
+
+const contractAddress = '0xYourDeployedContractAddress';
+
+// Create a contract instance with both public and wallet clients
+const contract = getContract({
+  address: contractAddress,
+  abi: storageAbi,
+  client: { public: publicClient, wallet: walletClient },
+});
+```
+
+
+# Interacting with the Instance
+
+Once the contract instance is created, interacting with it uses a convenient, chainable syntax that leverages Viem's type inference for full autocompletion and safety.
+
+## Reading State
+
+Read operations are accessed through the `read` property.
+
+```ts
+const currentValue = await contract.read.retrieve();
+console.log(`The current stored value is: ${currentValue}`);
+```
+
+## Writing State
+
+Write operations are accessed through the `write` property. This still follows the best practice of simulation, but the syntax is slightly different. The `simulate` method is available on the instance, and the `write` method can then be called.
+
+However, for a full workflow, it's often clearer to use the instance for the `write` call itself, after simulating with the public client.
+
+For simplicity, the direct write call is shown here, which would typically be preceded by a simulation.
+
+```ts
+const hash = await contract.write.store([500n]);
+console.log('Transaction to store new value sent. Hash:', hash);
+```
+
+## Watching Events
+
+Event listeners are accessed through the `watchEvent` property.
+
+```ts
+const unwatch = contract.watchEvent.ValueStored({}, {
+  onLogs: logs => console.log('ValueStored event detected:', logs)
+});
+```
+
+This interaction model is also fully integrated with development frameworks like Hardhat via the `hardhat-viem` plugin, which provides helpers like `hre.viem.deployContract` and `hre.viem.getContractAt` that return these typed instances.
+
+
+---
+
+
+# Trade-offs: Convenience vs. Bundle Size
+
+The primary trade-off of using the `getContract` instance is bundle size.
+
+While this pattern offers the convenience of not repeating the `address` and `abi` for every call, it is less optimal for tree-shaking.
+
+When a contract instance is created, it pulls in the code for a multitude of contract actions (`readContract`, `writeContract`, `estimateContractGas`, `watchContractEvent`, etc.) all at once.
+
+If an application only uses a small subset of these actions (e.g., only reading from the contract), the final production bundle may be larger than if the functional, tree-shakable actions (`client.readContract`) were used instead.
+
+The existence of the `getContract` instance is a testament to Viem's pragmatic design. Despite its strong philosophical preference for a functional, stateless interaction model, the library provides "escape hatches".
+
+This alternative pattern serves as a familiar bridge for developers migrating from Ethers.js, easing their transition while still offering the core benefits of Viem's type safety.
+
+
+---
+
+
+# Viem in Context: A Comparative Analysis with Ethers.js
+
+## Philosophical and Architectural Differences
+
+The core philosophical distinction lies in their primary objectives. Ethers.js has evolved into a comprehensive, mature, and feature-rich toolkit, valued for its stability and extensive community support.
+
+It is a reliable choice for complex dApps that require a wide array of functionalities out of the box.
+
+Viem, in contrast, was born with the explicit goal of solving the "quadrilemma" by optimising for performance, bundle size, stability, and developer experience simultaneously.
+
+This has resulted in a library that is more minimalist, modular, and performance-oriented. Its API design reflects this philosophy: where Ethers.js often uses a more abstracted, object-oriented model (e.g., Provider, Signer, Contract instances), Viem prefers an explicit, functional approach (e.g., PublicClient, WalletClient, and standalone Actions).
+
+## Migration Path
+
+For development teams considering a move from Ethers.js to Viem, the transition involves several key conceptual shifts. The official Viem documentation provides a comprehensive migration guide that maps Ethers.js concepts and methods to their Viem equivalents. The most important changes to internalise are:
+
+- **Provider becomes Client:**  
+  The Provider concept is replaced by the more specific PublicClient and WalletClient.
+
+- **Signer becomes Account:**  
+  The Signer is replaced by the Account object, which can be a JSON-RPC Account or a Local Account.
+
+- **Instance Methods become Actions:**  
+  The primary interaction model shifts from calling methods on a stateful Contract instance to using standalone, functional Actions on a Client.
+
+## Recommendations
+
+The following strategic recommendations can be made for development teams:
+
+### Choose Viem for:
+- All new dApp projects, especially those where performance and user experience are paramount.
+- Performance-critical web applications.
+- Teams that wish to leverage the full power of modern TypeScript for enhanced code quality and safety.
+- Projects where minimising the final bundle size is a key consideration.
+- Developers looking to deepen their understanding of Ethereum's underlying mechanics due to its pedagogical clarity.
+
+### Consider Ethers.js for:
+- Maintaining large, legacy projects with extensive, pre-existing Ethers.js codebases where the significant engineering cost of a full migration cannot be justified.
+- Teams with a strong, established preference for its specific object-oriented API design.
+- Projects that benefit from the vast and mature ecosystem of tutorials and community support available for Ethers.js.
+
+
+---
+
+# Introduction
+
+The wagmi stack consists of three critical technologies working in concert:
+
+- **wagmi:** The high-level React Hooks library that provides the intuitive, developer-facing API for managing wallets, interacting with contracts, and handling on-chain data.
+
+- **viem:** The low-level, high-performance TypeScript interface that serves as the powerful engine executing all underlying blockchain operations. It is the modern successor to ethers.js within this ecosystem.
+
+- **TanStack Query:** The sophisticated asynchronous state management library that underpins wagmi's advanced caching, data-fetching, and state synchronisation capabilities, providing a reactive and seamless user experience out of the box.
+
+The relationship between wagmi and viem is particularly noteworthy. The transition from ethers.js to viem was not a simple dependency swap; it was a foundational reconstruction.
+
+# Foundational Concepts: The Modern wagmi & viem Stack
+
+Understanding the distinct roles of each component in the wagmi stack is crucial for leveraging its full potential. The architecture is intentionally layered to provide both high-level convenience and low-level power.
+
+## The Role of wagmi
+
+wagmi serves as the opinionated, developer-facing layer. It is the "React way" of building for the blockchain.
+
+It offers a rich library of over 40 React Hooks that elegantly abstract away the intricate details of wallet connections, account state management, transaction signing, and smart contract interactions.
+
+By using hooks, developers can manage complex on-chain state with the same declarative patterns they are accustomed to in modern React development, drastically reducing boilerplate and improving code readability.
+
+## The viem Engine
+
+Beneath the surface of wagmi lies viem, the high-performance engine that powers all blockchain communication.
+
+Because wagmi is built directly on viem, applications that use wagmi inherit the benefits of viem automatically. This results in faster-loading dApps and a more robust development process, where many potential errors are caught at compile time rather than runtime.
+
+## State Management with TanStack Query
+
+A core feature that sets wagmi apart is its deep integration with TanStack Query for all asynchronous state management. This is not merely an implementation detail; it is a foundational pillar of the framework that provides a suite of powerful features out of the box:
+
+- **Caching:** Smartly caches on-chain data to avoid redundant network requests. For example, a token balance, once fetched, is stored and served from the cache on subsequent requests, making the UI feel instantaneous.
+
+- **Request Deduplication:** If multiple components on a page request the same piece of data simultaneously, wagmi ensures only a single request is sent to the RPC node, improving efficiency and reducing load.
+
+- **Persistence:** Can be configured to persist cache data to local storage, allowing dApps to load instantly for returning users even before a fresh network request completes.
+
+- **Auto-Refetching:** The framework is inherently reactive. It automatically listens for on-chain events and intelligently refetches relevant data when the user switches accounts, changes networks, or when a new block is mined. This eliminates a vast amount of manual state synchronisation logic that developers previously had to write themselves.
+
+# Comparative Analysis of Web3 Front-End Stacks
+
+To contextualise the advantages of this modern stack, the following table compares it against legacy approaches, such as using ethers.js directly or with the web3-react library.
+
+| Feature              | wagmi & viem Stack                                                                                       | ethers.js (with custom React logic) / web3-react                                            |
+|----------------------|---------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------|
+| Developer Experience | High-level hooks, composable APIs, auto-refreshing data, and integrated state management provide a streamlined workflow. Verbose but explicit APIs enhance understanding. | Lower-level and more manual. Requires developers to implement their own logic for state management, caching, and data fetching, leading to more boilerplate. |
+| Type Safety          | Exceptional. Strong, automatic type inference from contract ABIs and EIP-712 data structures. Autocomplete and static validation significantly reduce runtime errors. | Present but less integrated. Requires more manual type definition and lacks the deep, automatic inference of the wagmi and viem stack. |
+| Performance & Bundle Size | Highly optimised. viem is minimalist and tree-shakable, leading to tiny front-end bundle sizes. Features fast encoding and parsing algorithms. | ethers.js is more monolithic, resulting in a larger bundle size. Performance is robust for general use but not as optimised for front-end bundle size concerns. |
+| State Management     | Built-in via TanStack Query. Sophisticated caching, request deduplication, and persistence are core, out-of-the-box features. | Not included. The developer is responsible for implementing a state management solution from scratch, adding complexity and potential for error. |
+| Ecosystem & Stability | A modern, rapidly growing ecosystem with robust UI kits like ConnectKit and RainbowKit. Actively maintained full-time by its creators. | Mature, battle-tested, and stable with a large, established community. ethers.js is framework-agnostic, making it versatile but less tailored for React. |
