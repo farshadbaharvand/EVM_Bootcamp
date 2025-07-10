@@ -4,7 +4,7 @@
 
 Centralised systems, especially in the context of monetary institutions, exhibit several weaknesses that decentralised systems aim to solve.
 
-### 1. Monetary System Issues
+### Monetary System Issues
 
 - **Bank Closure / Insufficient Capital Reserves**  
   In extreme financial crises, banks may close unexpectedly.  
@@ -51,7 +51,7 @@ Decentralised systems aim to address the flaws of centralised models by promotin
 
 #  Blockchain Timeline
 
-## 🕰 1970s — The Foundations
+## 1970s — The Foundations
 
 In the 1970s, the early conceptual groundwork for blockchain technology began to emerge. The key focus during this period was on **security in digital communication**.
 
@@ -59,13 +59,15 @@ In the 1970s, the early conceptual groundwork for blockchain technology began to
 
 Two critical questions defined the era:
 
-1. **How do I ensure that my message has not been modified?**  
+**1. How do I ensure that my message has not been modified?**  
    - This is the problem of **integrity**.
    - A solution emerged in the form of **cryptographic hashing** — converting data into a fixed-length string that changes completely with even a small alteration.
+   ![How do I ensure that my message has not been modified?](./images/01.png)
 
-2. **How do I ensure that the message comes from a legitimate person?**  
+**2. How do I ensure that the message comes from a legitimate person?**  
    - This is the problem of **authenticity**.
    - It led to the development of **digital signatures** and **public-key cryptography**.
+   ![How do I ensure that the message comes from a legitimate person?](./images/02.png)
 
 ### Technologies Developed
 
