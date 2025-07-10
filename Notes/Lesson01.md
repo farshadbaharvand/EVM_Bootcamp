@@ -118,7 +118,6 @@ A major step forward came with the invention of **asymmetric cryptography** (als
 - Solves the problem of sharing secrets across insecure channels.
 ![Cryptography Asymmetric](./images/L01image03.png)
 
-![Public-Key](./images/L01image04.png)
 
 ---
 
