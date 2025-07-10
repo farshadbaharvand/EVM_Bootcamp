@@ -62,12 +62,12 @@ Two critical questions defined the era:
 **1. How do I ensure that my message has not been modified?**  
    - This is the problem of **integrity**.
    - A solution emerged in the form of **cryptographic hashing** — converting data into a fixed-length string that changes completely with even a small alteration.
-   ![How do I ensure that my message has not been modified?](./images/L01image01.png)
+   ![How do I ensure that my message has not been modified](./images/L01image01.png)
 
 **2. How do I ensure that the message comes from a legitimate person?**  
    - This is the problem of **authenticity**.
    - It led to the development of **digital signatures** and **public-key cryptography**.
-   ![How do I ensure that the message comes from a legitimate person?](./images/L01image02.png)
+   ![How do I ensure that the message comes from a legitimate person](./images/L01image02.png)
 
 ### Technologies Developed
 
