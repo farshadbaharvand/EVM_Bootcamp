@@ -399,7 +399,7 @@ Compare it to the known Merkle root.
 - **August 2008**: Domain **bitcoin.org** registered.
 - **October 2008**: Whitepaper *“Bitcoin: A Peer-to-Peer Electronic Cash System”* by **Satoshi Nakamoto** posted to a cryptography mailing list.
 - **January 2009**: Bitcoin software released as open-source; Genesis Block mined.
----
+
 ![Bitcoin](./images/L01image09.png)
 
 
@@ -417,20 +417,36 @@ Compare it to the known Merkle root.
 ### 2014 — **Ethereum** launched
 - Introduced smart contracts and a Turing-complete blockchain.
 
+---
+
 ### 2017 — **ICO Boom**
 - Hundreds of Initial Coin Offerings launched; Ethereum became a major fundraising platform.
+
+---
 
 ### 2018 — **Crypto Winter**
 - Market crash after ICO hype; many projects failed.
 
+---
+
+
 ### 2020 — **DeFi Summer**
 - Explosive growth in Decentralized Finance platforms like Uniswap, Aave, Compound.
+
+---
+
 
 ### 2021 — **NFT & Gaming Boom**
 - Rise of NFTs (non-fungible tokens), metaverse, and play-to-earn games like Axie Infinity.
 
+---
+
+
 ### 2022 — **Ethereum Merge**
 - Ethereum transitioned from Proof-of-Work to **Proof-of-Stake**, reducing energy consumption by over **99%**.
+
+---
+
 
 ### 2022 — **Another Crypto Winter**
 - Market downturn triggered by major collapses and global financial uncertainty.
@@ -478,8 +494,6 @@ These reduced gas fees and improved transaction throughput.
 ---
 
 # Blockchain Fundamentals 
-
----
 
 ## Introduction to Blockchain — Components
 
@@ -532,40 +546,6 @@ These reduced gas fees and improved transaction throughput.
 
 ---
 
-##  Bitcoin & Beyond
-
-### Early Bitcoin History
-- **August 2008**: Domain *bitcoin.org* registered.
-- **October 2008**: Whitepaper posted.
-- **January 2009**: Bitcoin software released.
-
-### First Real Transaction (2010)
-- Laszlo Hanyecz buys 2 pizzas for **10,000 BTC**.
-
-### General Blockchain Events (2009–2024)
-- **2014**: Ethereum created
-- **2017**: ICO boom
-- **2018**: Crypto winter
-- **2020**: DeFi summer
-- **2021**: Rise of NFTs & blockchain gaming
-- **2022**: Ethereum Merge → PoS
-- **2022**: Crypto winter 2.0
-
----
-
-## Recent Blockchain Events
-
-- **May 2022**: Terra Luna/UST collapse (~$60B loss)
-- **Nov 2022**: FTX collapse → Fraud allegations
-- **Sept 2022**: Ethereum Merge → Proof-of-Stake
-- **2022–2023**: Layer 2 Scaling — Arbitrum, Optimism, zkSync, Polygon
-- **Jan 2023**: Bitcoin Ordinals launched
-- **2023–2024**: SEC regulatory crackdowns
-- **Jan 2024**: Bitcoin ETF approvals (BlackRock)
-- **2024**: AI + Crypto convergence
-
----
-
 # Consensus in Distributed Systems
 
 ## Why Consensus?
@@ -573,7 +553,7 @@ To solve:
 - **Double Spending Problem**: Reuse of same digital tokens.
 - **Tampering & Ordering Issues** in an open network.
 
----
+
 
 ## Byzantine Fault Tolerance (BFT)
 
@@ -581,7 +561,7 @@ To solve:
 - Works even with imperfect network information.
 ![Byzantine Fault Tolerance (BFT)](./images/L01image13.png)
 
----
+
 ## The double spend problem
 
 ![The double spend problem1](./images/L01image14.png)
@@ -669,5 +649,7 @@ To solve:
 ##  Avalanche Consensus
 
 - (Not elaborated in source, but known for probabilistic finality via repeated subsampled voting)
+  ![Avalanche](./images/L01image18.png)
+
 
 ---
