@@ -62,12 +62,12 @@ Two critical questions defined the era:
 **1. How do I ensure that my message has not been modified?**  
    - This is the problem of **integrity**.
    - A solution emerged in the form of **cryptographic hashing** — converting data into a fixed-length string that changes completely with even a small alteration.
-   ![How do I ensure that my message has not been modified?](./images/01.png)
+   ![How do I ensure that my message has not been modified?](./images/L01Image01.png)
 
 **2. How do I ensure that the message comes from a legitimate person?**  
    - This is the problem of **authenticity**.
    - It led to the development of **digital signatures** and **public-key cryptography**.
-   ![How do I ensure that the message comes from a legitimate person?](./images/02.png)
+   ![How do I ensure that the message comes from a legitimate person?](./images/L01Image02.png)
 
 ### Technologies Developed
 
@@ -116,6 +116,9 @@ A major step forward came with the invention of **asymmetric cryptography** (als
   - **Public Key**: Used for **encryption**.
   - **Private Key**: Used for **decryption**.
 - Solves the problem of sharing secrets across insecure channels.
+![Cryptography Asymmetric](./images/L01Image03.png)
+
+![Public-Key](./images/L01Image04.png)
 
 ---
 
@@ -130,6 +133,8 @@ Developed to allow the creation of a **shared secret** between two parties witho
 
  See this [Guide](https://github.com/archit-p/simplest-oblivious-transfer) for a visual explanation.
 
+![Diffie-Hellman Key Exchange](./images/L01Image04.png)
+![Public-Key](./images/L01Image05.png)
 ---
 
 ##  Digital Signatures
@@ -207,6 +212,10 @@ d62c65bf0bcda32b57b277d9ad9f146e
 
 ---
 
+![hash](./images/L01Image06.png)
+
+---
+
 ## Common Hash Functions
 
 | Name      | Output Size | Common Use Cases                      |
@@ -274,6 +283,11 @@ A **Merkle Tree** (or **hash tree**) is a binary tree structure used to efficien
 - HashA = hash(H1 + H2)
 - HashB = hash(H3 + H4)
 - Root = hash(HashA + HashB)
+
+---
+![merkel1](./images/L01Image07.png)
+![merkel2](./images/L01Image08.png)
+
 
 ---
 
@@ -386,6 +400,9 @@ Compare it to the known Merkle root.
 - **August 2008**: Domain **bitcoin.org** registered.
 - **October 2008**: Whitepaper *“Bitcoin: A Peer-to-Peer Electronic Cash System”* by **Satoshi Nakamoto** posted to a cryptography mailing list.
 - **January 2009**: Bitcoin software released as open-source; Genesis Block mined.
+---
+![Bitcoin](./images/L01Image09.png)
+
 
 ---
 
@@ -503,6 +520,16 @@ These reduced gas fees and improved transaction throughput.
   - *1998*: b-money – Wei Dai
   - *1998*: Bit Gold – Nick Szabo
 > “The one thing that’s missing is a reliable e-cash…” — *Milton Friedman (1999)*
+---
+![Blockchain as a state machine in Bitcoin
+](./images/L01Image10.png)
+
+![General Blockchain Structure for example Bitcoin
+](./images/L01Image11.png)
+
+![Genesis Block - the starting block
+](./images/L01Image12.png)
+
 
 ---
 
@@ -540,9 +567,9 @@ These reduced gas fees and improved transaction throughput.
 
 ---
 
-## Consensus in Distributed Systems
+# Consensus in Distributed Systems
 
-### Why Consensus?
+## Why Consensus?
 To solve:
 - **Double Spending Problem**: Reuse of same digital tokens.
 - **Tampering & Ordering Issues** in an open network.
@@ -553,8 +580,14 @@ To solve:
 
 - Tolerates malfunctioning/malicious nodes.
 - Works even with imperfect network information.
+![Byzantine Fault Tolerance (BFT)](./images/L01Image13.png)
 
 ---
+## The double spend problem
+
+![The double spend problem1](./images/L01Image14.png)
+
+![The double spend problem2](./images/L01Image15.png)
 
 ## Synchronization Challenges
 
@@ -570,6 +603,8 @@ To solve:
 ### Two Key Parts:
 1. **Sybil Resistance**: Prevents identity forgery.
 2. **Consensus Logic**: Reaches agreement on canonical state.
+
+![Sybil](./images/L01Image16.png)
 
 ### Common "Proof-of" Mechanisms
 - **Proof of Work**
@@ -607,6 +642,8 @@ To solve:
   3. Nodes reply → Network
   4. Once `2f + 1` matching responses → consensus
   5. Nodes can replace faulty leaders
+
+  ![pBFT](./images/L01Image17.png)
 
 ---
 
