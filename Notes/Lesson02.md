@@ -2,7 +2,7 @@
 
 Etherscan is a block explorer and analytics platform for Ethereum. It provides insights into blocks, transactions, contracts, and more. It's also a tool for developers to interact with smart contracts and verify deployments.
 
----
+![Etherscan](./images/L02image01.png)
 
 ##    Core Features
 
@@ -31,6 +31,7 @@ Etherscan is a block explorer and analytics platform for Ethereum. It provides i
 ###    Testnet Faucets
 - Etherscan provides access to faucets for acquiring testnet ETH.
 - Example: [Sepolia Faucet](https://sepolia.etherscan.io/)
+![Etherscan](./images/L02image02.png)
 
 ---
 
@@ -45,6 +46,7 @@ Etherscan is a block explorer and analytics platform for Ethereum. It provides i
 ###    Write Functions
 - Submit transactions by interacting with public/external contract methods.
 - Requires gas and appropriate permissions.
+![Etherscan](./images/L02image03.png)
 
 ---
 
@@ -55,13 +57,14 @@ Etherscan is a block explorer and analytics platform for Ethereum. It provides i
   - Users trust your contract more.
   - Developers can interact easily via Etherscan.
   - Enables ABI auto-generation and "Write/Read Contract" UI.
+  ![Etherscan](./images/L02image04.png)
 
 ### Verification Options
 - **Remix Plugin (Etherscan Plugin)**:
   - Install the Etherscan plugin inside Remix IDE.
   - Generate an **Etherscan API key** (requires account).
   - Use plugin to auto-verify after deployment.
-
+![Etherscan](./images/L02image05.png)
 - **Manual Verification**:
   - Navigate to Etherscan → **"Verify and Publish"** section.
   - Enter source code, compiler details, and ABI manually.
@@ -71,6 +74,7 @@ Etherscan is a block explorer and analytics platform for Ethereum. It provides i
 ##  Deployment Workflow Example
 
 1. **Initial Deployment** (e.g., via Remix or Hardhat)
+![Etherscan](./images/L02image06.png)
 2. **Verification Step**
    - Use Etherscan plugin or manual form.
    - Provide:
@@ -84,7 +88,7 @@ Etherscan is a block explorer and analytics platform for Ethereum. It provides i
    - Contract source becomes visible on Etherscan.
    - Users and tools can interact directly through Etherscan UI.
 
----
+![Etherscan](./images/L02image07.png)
 
 ##  Getting an Etherscan API Key
 
@@ -95,6 +99,9 @@ Etherscan is a block explorer and analytics platform for Ethereum. It provides i
    - Remix Plugin
    - Hardhat/Foundry verification scripts
    - Analytics integrations
+
+---
+![Etherscan](./images/L02image08.png)
 
 ---
 
