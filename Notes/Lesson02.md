@@ -181,6 +181,125 @@ Vibe Coding is an intuitive and spontaneous style of programming focused on crea
 
 ---
 
+# Introduction to Remix
+
+Remix is an IDE for Solidity development. It can run in the browser, or on the desktop.
+
+- **Browser**: [https://remix.ethereum.org/](https://remix.ethereum.org/)
+- **Desktop**:  
+  To install Remix on your local machine, use:
+
+```bash
+npm install -g @remix-project/remixd
+```
+![Remix](./images/L02image09.png)
+
+---
+
+## Remix Documentation
+
+Comprehensive documentation is available within the Remix environment, often accessible via the **Help** or **Docs** plugins.
+
+---
+
+## Plugins
+
+The panel on the left allows us to add plugins to extend Remix functionality.
+
+Some useful plugins include:
+
+- **Solidity Compiler**: For compiling smart contracts.
+- **Deploy & Run Transactions**: For deploying and interacting with contracts.
+- **Solidity Unit Testing**: For writing and executing tests.
+
+The **File Explorer** within this panel also allows us to navigate between the contracts we are working on.
+
+![Remix](./images/L02image10.png)
+---
+
+## Editor Panel
+
+This is where we edit our smart contracts.
+
+Features include:
+
+- Syntax highlighting for Solidity.
+- Error and warning indicators.
+- Auto-complete and IntelliSense.
+- Support for multiple files and tabs.
+
+![Remix](./images/L02image11.png)
+
+---
+
+## Output Panel
+
+The output panel shows:
+
+- Activity on your local or test blockchain.
+- Compilation results.
+- Transaction logs.
+- Error messages and console outputs.
+![Remix](./images/L02image12.png)
+---
+
+## Compiling the Contract
+
+To compile a contract:
+
+1. Click the **Solidity Compiler** icon (represented by a Solidity logo) in the left-hand panel.
+2. Choose the appropriate compiler version.
+3. Check the auto-compile option if desired.
+4. Click the **Compile** button.
+
+If successful, the compilation result will appear in the output panel.
+![Remix](./images/L02image13.png)
+---
+
+## Deploying a Contract
+
+To deploy a compiled contract:
+
+1. Click the **Deploy & Run Transactions** icon in the left-hand panel.
+2. In the new panel, choose the correct environment under the **Environment** dropdown.
+3. Select the desired contract from the dropdown list.
+4. Click the **Deploy** button.
+![Remix](./images/L02image14.png)
+
+---
+# Choosing the Network / Environment
+
+When initially developing contracts, it is recommended to use the simplest environment provided by Remix.
+
+![Remix](./images/L02image15.png)
+
+## Steps to Deploy a Contract
+
+1. Select the **Deploy & Run Transactions** plugin from the left panel.
+2. In the **Environment** dropdown, choose:
+   - **Remix VM (Prague)** – this is the easiest to use and requires no external connections.
+3. In the **Contract** dropdown list, select the contract you wish to deploy.
+![Remix](./images/L02image16.png)
+
+4. Click the **Deploy** button to deploy the selected contract.
+
+## After Deployment
+
+- If the contract deploys correctly, the **Output Window** will display the results of the transaction.
+![Remix](./images/L02image17.png)
+- You will also see the deployed contract listed in the **Deployed Contracts** section of the deploy panel.
+
+From here, you can:
+
+- Interact with your contract by calling its functions.
+![Remix](./images/L02image18.png)
+- Send transactions directly from the UI.
+
+> Note: Once deployed, the contract is assigned an address on the blockchain, similar to a wallet address.
+
+
+---
+
 #  Solidity  – Part 1
 
 This section provides a concise introduction to basic Solidity syntax and structure, perfect for beginners learning smart contract development.
