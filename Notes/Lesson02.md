@@ -358,11 +358,6 @@ contract Score {
 - Solidity is **statically typed**, so you must declare a variable's type (e.g., `uint`, `address`, `string`) before the variable name.
 - All statements must **end with a semicolon** `;`.
 
----
-
-#  Solidity  – Part 2
-
-This section continues your Solidity journey, covering types, functions, modifiers, arrays, mappings, and structs.
 
 ---
 
@@ -404,6 +399,19 @@ contract Score {
 - `returns`: defines return type
 - `return`: sends back a value
 - `public`: visibility modifier
+
+---
+### Getter function using return
+Definiton : In Solidity, a getter is a function that returns a value.
+
+To return a value from a function (here our score), you use the following keywords:
+
+In the function definition: returns + variable type returned between parentheses for example (uint)
+In the function body: return followed by what you want to return for example return score; or return 137;
+### Setter function: pass parameters to our function
+Definition : In Solidity, a setter is a function that modifies the value of a variable (modifies the state of the contract). To creates a setter, you must specify the parameters when you declare your function.
+
+After your function name, specifies between parentheses 1) the variable type (uint) and 2) the variable name (new_score)
 
 ---
 
