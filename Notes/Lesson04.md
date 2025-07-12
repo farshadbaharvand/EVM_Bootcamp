@@ -249,6 +249,8 @@ Using OpenZeppelin's audited libraries ensures security best practices and saves
 
 # Using OpenZeppelin Contracts
 
+![OpenZeppelin](./images/L04image01.png)
+
 ## Overview
 
 OpenZeppelin Contracts is a **library for secure smart contract development**. It provides a robust foundation built on community-audited code and is widely adopted in Ethereum development.
@@ -346,6 +348,6 @@ By using OpenZeppelin’s Contracts library, you gain the advantages of security
 - [Solidity Documentation](https://docs.soliditylang.org/)
 - [Remix IDE](https://remix.ethereum.org/)
 
-``` 
+ 
 
-Let me know if you'd like a [custom token wizard demo](f), [token decimal conversion table](f), or [ERC20 vs ERC721 comparison](f).
+
