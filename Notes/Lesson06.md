@@ -1,3 +1,562 @@
+# Arrays
+# Simple Examples
+## Student Registry Example 
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract StudentRegistry {
+    // Fixed-size array - stores exactly 3 top scores
+    uint256[3] public topScores;
+    
+    // Dynamic array - can grow/shrink as needed
+    string[] public studentNames;
+    
+    // Dynamic array of addresses
+    address[] public studentAddresses;
+    
+    // Mapping to check if a student exists (prevents duplicates)
+    mapping(address => bool) public isStudent;
+    
+    constructor() {
+        // Initialize fixed array
+        topScores[0] = 95;
+        topScores[1] = 92;
+        topScores[2] = 90;
+    }
+    
+    // Add a new student
+    function addStudent(string memory _name) public {
+        require(!isStudent[msg.sender], "Student already registered");
+        
+        studentNames.push(_name);
+        studentAddresses.push(msg.sender);
+        isStudent[msg.sender] = true;
+    }
+    
+    // Get total number of students
+    function getStudentCount() public view returns (uint256) {
+        return studentNames.length;
+    }
+    
+    // Get student details by index
+    function getStudent(uint256 _index) public view returns (string memory name, address addr) {
+        require(_index < studentNames.length, "Index out of bounds");
+        return (studentNames[_index], studentAddresses[_index]);
+    }
+    
+    // Update top score at specific position (0, 1, or 2)
+    function updateTopScore(uint256 _position, uint256 _newScore) public {
+        require(_position < 3, "Invalid position");
+        topScores[_position] = _newScore;
+    }
+    
+    // Get all student names (be careful with gas costs!)
+    function getAllStudentNames() public view returns (string[] memory) {
+        return studentNames;
+    }
+    
+    // Remove last student (demonstrating pop)
+    function removeLastStudent() public {
+        require(studentNames.length > 0, "No students to remove");
+        
+        address lastStudent = studentAddresses[studentAddresses.length - 1];
+        
+        studentNames.pop();
+        studentAddresses.pop();
+        isStudent[lastStudent] = false;
+    }
+}
+
+```
+
+
+
+# StudentRegistry Smart Contract – Explanation
+
+---
+
+## Overview
+
+The contract demonstrates:
+
+- Use of fixed-size and dynamic arrays
+- Basic use of mappings for tracking unique entries
+- Adding and removing student records
+- Accessing student data by index
+- Simple admin-like functions (like updating top scores)
+
+---
+
+## Contract Structure
+
+### 1. SPDX License and Pragma
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+```
+
+- Declares the license type as MIT.
+- Specifies the Solidity compiler version.
+
+---
+
+### 2. State Variables
+
+```solidity
+uint256[3] public topScores;
+string[] public studentNames;
+address[] public studentAddresses;
+mapping(address => bool) public isStudent;
+```
+
+- `topScores`: Fixed-size array that stores the top 3 scores.
+- `studentNames`: Dynamic array to store names of students.
+- `studentAddresses`: Dynamic array to store addresses of students.
+- `isStudent`: A mapping to prevent duplicate registrations.
+
+---
+
+### 3. Constructor
+
+```solidity
+constructor() {
+    topScores[0] = 95;
+    topScores[1] = 92;
+    topScores[2] = 90;
+}
+```
+
+- Initializes the top scores when the contract is deployed.
+
+---
+
+### 4. Add a New Student
+
+```solidity
+function addStudent(string memory _name) public {
+    require(!isStudent[msg.sender], "Student already registered");
+
+    studentNames.push(_name);
+    studentAddresses.push(msg.sender);
+    isStudent[msg.sender] = true;
+}
+```
+
+- Registers a new student if they haven't registered before.
+
+---
+
+### 5. Get Total Number of Students
+
+```solidity
+function getStudentCount() public view returns (uint256) {
+    return studentNames.length;
+}
+```
+
+- Returns the number of students registered.
+
+---
+
+### 6. Get Student Details by Index
+
+```solidity
+function getStudent(uint256 _index) public view returns (string memory name, address addr) {
+    require(_index < studentNames.length, "Index out of bounds");
+    return (studentNames[_index], studentAddresses[_index]);
+}
+```
+
+- Retrieves a student’s name and address using an index.
+
+---
+
+### 7. Update Top Score
+
+```solidity
+function updateTopScore(uint256 _position, uint256 _newScore) public {
+    require(_position < 3, "Invalid position");
+    topScores[_position] = _newScore;
+}
+```
+
+- Updates a score in the topScores array at a given position (0, 1, or 2).
+
+---
+
+### 8. Get All Student Names
+
+```solidity
+function getAllStudentNames() public view returns (string[] memory) {
+    return studentNames;
+}
+```
+
+- Returns all student names (⚠️ gas-intensive if many entries).
+
+---
+
+### 9. Remove the Last Student
+
+```solidity
+function removeLastStudent() public {
+    require(studentNames.length > 0, "No students to remove");
+
+    address lastStudent = studentAddresses[studentAddresses.length - 1];
+
+    studentNames.pop();
+    studentAddresses.pop();
+    isStudent[lastStudent] = false;
+}
+```
+
+- Removes the most recently added student from the lists.
+- Resets their `isStudent` mapping to false.
+
+---
+
+## Summary
+
+| Function               | Purpose                                           |
+|------------------------|---------------------------------------------------|
+| `addStudent()`         | Adds a new student (unique check with mapping)   |
+| `getStudentCount()`    | Returns total registered students                |
+| `getStudent(index)`    | Retrieves student data by index                  |
+| `updateTopScore()`     | Updates one of the top 3 scores                  |
+| `getAllStudentNames()` | Returns all names (careful with gas usage)       |
+| `removeLastStudent()`  | Removes last student from arrays and mapping     |
+
+--- 
+
+## Notes
+
+- All student data is public and accessible via getter functions.
+- You can expand this contract to include roles (e.g. admin only actions), timestamps, or student metadata.
+
+
+## Voting Example 
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract VotingSystem {
+    struct Proposal {
+        string description;
+        uint256 voteCount;
+        bool executed;
+        address proposer;
+        address[] voters;  // Array inside struct
+    }
+    
+    // Dynamic array of structs
+    Proposal[] public proposals;
+    
+    // 2D array - stores vote choices per proposal per voter
+    // mapping is more gas-efficient, but this demonstrates 2D arrays
+    mapping(uint256 => mapping(address => bool)) public hasVoted;
+    
+    // Array of active proposal IDs (demonstrates filtering)
+    uint256[] public activeProposalIds;
+    
+    event ProposalCreated(uint256 indexed proposalId, address indexed proposer);
+    event VoteCast(uint256 indexed proposalId, address indexed voter);
+    
+    // Create a new proposal
+    function createProposal(string memory _description) public returns (uint256) {
+        Proposal memory newProposal = Proposal({
+            description: _description,
+            voteCount: 0,
+            executed: false,
+            proposer: msg.sender,
+            voters: new address[](0)  // Initialize empty array
+        });
+        
+        proposals.push(newProposal);
+        uint256 proposalId = proposals.length - 1;
+        activeProposalIds.push(proposalId);
+        
+        emit ProposalCreated(proposalId, msg.sender);
+        return proposalId;
+    }
+    
+    // Vote for a proposal
+    function vote(uint256 _proposalId) public {
+        require(_proposalId < proposals.length, "Invalid proposal ID");
+        require(!hasVoted[_proposalId][msg.sender], "Already voted");
+        require(!proposals[_proposalId].executed, "Proposal already executed");
+        
+        // Add voter to the proposal's voters array
+        proposals[_proposalId].voters.push(msg.sender);
+        proposals[_proposalId].voteCount++;
+        hasVoted[_proposalId][msg.sender] = true;
+        
+        emit VoteCast(_proposalId, msg.sender);
+    }
+    
+    // Get voters for a specific proposal
+    function getProposalVoters(uint256 _proposalId) public view returns (address[] memory) {
+        require(_proposalId < proposals.length, "Invalid proposal ID");
+        return proposals[_proposalId].voters;
+    }
+    
+    // Get number of voters for a proposal
+    function getVoterCount(uint256 _proposalId) public view returns (uint256) {
+        require(_proposalId < proposals.length, "Invalid proposal ID");
+        return proposals[_proposalId].voters.length;
+    }
+    
+    // Mark proposal as executed and remove from active list
+    function executeProposal(uint256 _proposalId) public {
+        require(_proposalId < proposals.length, "Invalid proposal ID");
+        require(proposals[_proposalId].proposer == msg.sender, "Only proposer can execute");
+        require(!proposals[_proposalId].executed, "Already executed");
+        require(proposals[_proposalId].voteCount >= 3, "Not enough votes");
+        
+        proposals[_proposalId].executed = true;
+        
+        // Remove from activeProposalIds array
+        _removeFromActiveProposals(_proposalId);
+    }
+    
+    // Helper function to remove proposal from active list
+    function _removeFromActiveProposals(uint256 _proposalId) private {
+        uint256 length = activeProposalIds.length;
+        for (uint256 i = 0; i < length; i++) {
+            if (activeProposalIds[i] == _proposalId) {
+                // Move last element to this position and pop
+                activeProposalIds[i] = activeProposalIds[length - 1];
+                activeProposalIds.pop();
+                break;
+            }
+        }
+    }
+    
+    // Get all active proposals (not executed)
+    function getActiveProposals() public view returns (uint256[] memory) {
+        return activeProposalIds;
+    }
+    
+    // Get proposal details with voter addresses
+    function getProposalDetails(uint256 _proposalId) public view returns (
+        string memory description,
+        uint256 voteCount,
+        bool executed,
+        address proposer,
+        uint256 voterCount
+    ) {
+        require(_proposalId < proposals.length, "Invalid proposal ID");
+        Proposal storage proposal = proposals[_proposalId];
+        
+        return (
+            proposal.description,
+            proposal.voteCount,
+            proposal.executed,
+            proposal.proposer,
+            proposal.voters.length
+        );
+    }
+}
+
+```
+# VotingSystem Smart Contract – Explanation
+
+---
+
+## Overview
+
+The contract demonstrates:
+
+- Use of structs and dynamic arrays
+- Two-dimensional mappings
+- Event emission
+- Filtering active proposals
+- Executing proposals under conditions
+
+---
+
+## Contract Structure
+
+### 1. SPDX License and Pragma
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+```
+
+- Specifies the license and the Solidity version.
+
+---
+
+### 2. Proposal Struct
+
+```solidity
+struct Proposal {
+    string description;
+    uint256 voteCount;
+    bool executed;
+    address proposer;
+    address[] voters;
+}
+```
+
+- Stores the proposal’s details, votes, proposer address, and the list of voters.
+
+---
+
+### 3. State Variables
+
+```solidity
+Proposal[] public proposals;
+mapping(uint256 => mapping(address => bool)) public hasVoted;
+uint256[] public activeProposalIds;
+```
+
+- `proposals`: Dynamic array holding all proposals.
+- `hasVoted`: 2D mapping to track if a user has voted on a specific proposal.
+- `activeProposalIds`: Tracks proposals that are not yet executed.
+
+---
+
+### 4. Events
+
+```solidity
+event ProposalCreated(uint256 indexed proposalId, address indexed proposer);
+event VoteCast(uint256 indexed proposalId, address indexed voter);
+```
+
+- Emit logs when proposals are created or when votes are cast.
+
+---
+
+## Functionality
+
+### 5. Create a New Proposal
+
+```solidity
+function createProposal(string memory _description) public returns (uint256)
+```
+
+- Initializes a new proposal with an empty voters array.
+- Pushes it to the `proposals` array.
+- Adds the proposal ID to `activeProposalIds`.
+
+---
+
+### 6. Cast a Vote
+
+```solidity
+function vote(uint256 _proposalId) public
+```
+
+- Requires that:
+  - Proposal exists
+  - Voter hasn't already voted
+  - Proposal is not yet executed
+- Adds the voter's address to the proposal’s `voters` array.
+- Increments vote count.
+- Marks the voter as having voted.
+
+---
+
+### 7. Get Voters of a Proposal
+
+```solidity
+function getProposalVoters(uint256 _proposalId) public view returns (address[] memory)
+```
+
+- Returns the list of voters for a given proposal.
+
+---
+
+### 8. Get Number of Voters for a Proposal
+
+```solidity
+function getVoterCount(uint256 _proposalId) public view returns (uint256)
+```
+
+- Returns the length of the `voters` array for a given proposal.
+
+---
+
+### 9. Execute a Proposal
+
+```solidity
+function executeProposal(uint256 _proposalId) public
+```
+
+- Requirements:
+  - Only the original proposer can execute
+  - Proposal must not be already executed
+  - Must have received at least 3 votes
+- Marks it as executed.
+- Removes it from `activeProposalIds`.
+
+---
+
+### 10. Internal Helper to Remove Executed Proposal from Active List
+
+```solidity
+function _removeFromActiveProposals(uint256 _proposalId) private
+```
+
+- Finds the index of the proposal in the active list.
+- Swaps it with the last item and uses `.pop()` to remove it efficiently.
+
+---
+
+### 11. Get All Active Proposal IDs
+
+```solidity
+function getActiveProposals() public view returns (uint256[] memory)
+```
+
+- Returns the list of active (not executed) proposals.
+
+---
+
+### 12. Get Proposal Details
+
+```solidity
+function getProposalDetails(uint256 _proposalId) public view returns (
+    string memory description,
+    uint256 voteCount,
+    bool executed,
+    address proposer,
+    uint256 voterCount
+)
+```
+
+- Returns all key information about a proposal, including number of voters.
+
+---
+
+## Summary Table
+
+| Function                   | Purpose                                                 |
+|----------------------------|----------------------------------------------------------|
+| `createProposal()`         | Adds a new proposal                                      |
+| `vote()`                   | Casts a vote for a proposal                              |
+| `getProposalVoters()`      | Returns list of addresses who voted                      |
+| `getVoterCount()`          | Number of voters for a proposal                          |
+| `executeProposal()`        | Finalizes proposal if conditions met                     |
+| `getActiveProposals()`     | Lists all currently active (non-executed) proposals      |
+| `getProposalDetails()`     | Gets full data of a specific proposal                    |
+
+---
+
+## Notes
+
+- **Minimum 3 votes required** to execute a proposal.
+- Proposals must be executed by their original proposer.
+- Using arrays inside structs and dynamic filtering is educational but may increase gas costs.
+- For efficiency in real applications, mappings are preferred over arrays for large data.
+
+
+
 # Ethereum Virtual Machine (EVM)
 
 ## Overview

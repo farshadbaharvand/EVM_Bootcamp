@@ -30,22 +30,21 @@ Foundry supports fast and advanced Solidity testing capabilities, including the 
 
 ### 1. Install Foundry
 
-Installation steps vary by operating system. Refer to the [Foundry Book](https://book.getfoundry.sh/getting-started/installation.html) for detailed instructions.
+Installation steps vary by operating system. Refer to the [Foundry Book](https://getfoundry.sh/introduction/installation/#using-foundryup) for detailed instructions.
 
 A common Unix-based installation method:
 
 ```bash
-curl -L https://foundry.paradigm.xyz | bash
-foundryup
-
-
+curl -L https://foundry.paradigm.xyz 
 ```
 
 
 ### 2. Initialise a Project
 To create a new project named lets_forge:
-
+```bash
 forge init lets_forge
+```
+
 
 This sets up a new Foundry project with a recommended directory structure.
 
@@ -53,16 +52,18 @@ This sets up a new Foundry project with a recommended directory structure.
 
 ### 3. Build the Project
 Navigate to the project directory and compile the contracts:
-
+```bash
 cd lets_forge
 forge build
+```
 
 
 ### 4. Run Tests
 To verify the installation and that everything works correctly:
+```bash
 forge test
+```
 
-This runs the Solidity-based tests in the /test directory and outputs the results.
 
 
 
@@ -80,11 +81,13 @@ cd hello_foundry
 ```
 
 You can visualize the top-level folder structure using the tree command:
-
+```bash
 tree . -d -L 1
+```
 
 
 Output:
+
 ```bash
 .
 ├── lib
@@ -94,13 +97,13 @@ Output:
 ```
 ### This reveals 4 main directories:
 
-- lib/ – External dependencies are stored here (e.g., OpenZeppelin).
+- **lib/** – External dependencies are stored here (e.g., OpenZeppelin).
 
-- script/ – Scripts for deployment and automation go here.
+- **script/** – Scripts for deployment and automation go here.
 
-- src/ – Your main contract source code lives here.
+- **src/** – Your main contract source code lives here.
 
-- test/ – Solidity or other supported test files are placed here.
+- **test/** – Solidity or other supported test files are placed here.
 
 
 ## Build Output
