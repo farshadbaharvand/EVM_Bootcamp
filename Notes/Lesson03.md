@@ -46,45 +46,6 @@ When you emit an event in Solidity, the arguments are stored in the transaction 
 
 ---
 
-## Token Standards
-
-From the OpenZeppelin documentation:
-
-> "Even though the concept of a token is simple, they have a variety of complexities in the implementation. Because everything in Ethereum is just a smart contract, and there are no rules about what smart contracts have to do, the community has developed a variety of standards (called EIPs or ERCs) for documenting how a contract can interoperate with other contracts."
-
-### Common Token Standards
-
-- **ERC20**: The most common token standard for fungible assets. Simple and widely adopted.
-- **ERC721**: Used for non-fungible tokens (NFTs). Common in games and collectibles.
-- **ERC777**: Backward compatible with ERC20. Adds features like send/receive hooks and operators (authorized third parties).
-- **ERC1155**: Multi-token standard. A single contract can manage fungible, non-fungible, or even semi-fungible tokens.
-
----
-
-## ERC20 Standard
-
-ERC20 is a widely used standard for fungible tokens. It is accepted by:
-
-- Developers
-- Exchanges
-- Wallet providers
-
-To comply with the ERC20 standard, a smart contract must implement specific functions and events (see OpenZeppelin’s interface for full details).
-
----
-
-## ERC20 Considerations
-
-Before deploying an ERC20 token, consider:
-
-- Do you have someone knowledgeable in token economics?
-- How should the token supply evolve over time?
-- Could your contract be interpreted as a rug pull?
-- Do you need advanced functionality like that offered by ERC777 or ERC1155?
-
-
----
-
 # Token Standards in Ethereum
 
 Token standards in Ethereum define how tokens behave and interact within the ecosystem. These standards are essential for ensuring interoperability between smart contracts, wallets, exchanges, and dApps.
@@ -97,24 +58,121 @@ From the OpenZeppelin documentation:
 
 These standards, known as **Ethereum Improvement Proposals (EIPs)** or **Ethereum Request for Comments (ERCs)**, provide common interfaces and expected behaviors for tokens.
 
+
 ---
 
 ## Common Ethereum Token Standards
+### Common Token Standards
+
+- **ERC20**: The most common token standard for fungible assets. Simple and widely adopted.
+- **ERC721**: Used for non-fungible tokens (NFTs). Common in games and collectibles.
+- **ERC777**: Backward compatible with ERC20. Adds features like send/receive hooks and operators (authorized third parties).
+- **ERC1155**: Multi-token standard. A single contract can manage fungible, non-fungible, or even semi-fungible tokens.
+
 
 ### ERC20 — Fungible Tokens
 
-- The most widely used token standard.
-- Represents **fungible** assets, where each token is interchangeable (e.g., currencies, voting shares).
-- Simple and widely adopted by wallets and exchanges.
-- Known for its basic functionality, which includes:
-  - `totalSupply`
-  - `balanceOf`
-  - `transfer`
-  - `approve`
-  - `transferFrom`
-  - `allowance`
 
-**Limitations**: No native hooks for token reception or additional control logic.
+
+#### Introduction
+
+**ERC20** is an example of a **fungible token**—meaning each token is interchangeable with another of equal value. It is a widely accepted standard by developers, exchanges, and wallet providers. 
+
+To be an ERC20 token, your smart contract must implement specific functions and events as defined in the official interface. The most commonly used reference is from OpenZeppelin.
+
+#### Required Functions and Events
+
+To comply with the ERC20 standard, a contract must implement the following:
+
+#### Functions
+
+1. `totalSupply()`: Returns the total token supply.
+2. `balanceOf(address account)`: Returns the token balance of a given address.
+3. `transfer(address to, uint256 amount)`: Transfers tokens to another address.
+4. `approve(address spender, uint256 amount)`: Approves another address to spend tokens on your behalf.
+5. `allowance(address owner, address spender)`: Returns the remaining number of tokens that the spender can use on behalf of the owner.
+6. `transferFrom(address from, address to, uint256 amount)`: Transfers tokens from one address to another, using an allowance.
+
+#### Events
+
+- `Transfer(address indexed from, address indexed to, uint256 value)`
+- `Approval(address indexed owner, address indexed spender, uint256 value)`
+
+![ERC20](./images/L03image01.png)
+
+
+For a full and secure implementation, it is highly recommended to use the [OpenZeppelin ERC20 interface](https://docs.openzeppelin.com/contracts/latest/api/token/erc20).
+
+
+
+
+#### ERC20 Considerations
+
+When designing an ERC20 token, there are several important considerations to keep in mind to ensure security, utility, and sustainability of the token in the ecosystem.
+
+###### 1. Get Someone Who Understands Token Economics
+
+Tokenomics is critical for the success of any tokenized system. Work with someone who understands:
+
+- Supply and demand mechanics
+- Incentive structures
+- Inflation vs deflation models
+- Vesting schedules
+- Use cases for the token (governance, utility, staking, etc.)
+
+###### 2. Think About How the Supply Should Change Over Time
+
+Token supply mechanisms must be planned carefully:
+
+- **Fixed Supply**: No new tokens are minted after the initial creation.
+- **Inflationary Supply**: New tokens are minted over time to reward participants.
+- **Deflationary Supply**: Tokens are burned or otherwise removed from circulation.
+- **Minting Controls**: Decide who (if anyone) can mint new tokens and under what conditions.
+
+Example mint function with restricted access:
+
+```solidity
+function mint(address to, uint256 amount) public onlyOwner {
+    _mint(to, amount);
+}
+```
+
+###### 3. Will Your Contract Look Like (or Be) a Rug Pull?
+
+Ensure transparency and security to avoid appearing like a scam or "rug pull". Red flags include:
+
+- Large allocations to team wallets with no vesting
+- Functions that allow developers to drain funds or mint infinite tokens
+- Lack of public audit or documentation
+- Hidden or obfuscated backdoors
+
+Example of a risky function to avoid:
+
+```solidity
+function rugPull() public {
+    payable(owner).transfer(address(this).balance);
+}
+```
+
+To build trust:
+
+- Publish your smart contract source code
+- Get your contract audited
+- Clearly document your token's purpose and logic
+
+###### 4. Do You Need the Extended Functionality Offered by ERC777 / ERC1155 Standards?
+
+Consider whether ERC20 is sufficient for your use case. Alternatives:
+
+- **ERC777**: Advanced token standard with features like hooks for sending/receiving tokens, improved interoperability, and operator-based sending.
+- **ERC1155**: Supports multiple token types (fungible and non-fungible) in one contract, often used for games and NFTs.
+
+Choose based on:
+
+- Use case complexity
+- Need for batch transfers or richer token interactions
+- Compatibility with existing dApps and wallets
+
 
 ---
 
@@ -169,48 +227,4 @@ These standards, known as **Ethereum Improvement Proposals (EIPs)** or **Ethereu
 
 
 ---
-
-# ERC20 Token Guide
-
-## Introduction
-
-**ERC20** is an example of a **fungible token**—meaning each token is interchangeable with another of equal value. It is a widely accepted standard by developers, exchanges, and wallet providers. 
-
-To be an ERC20 token, your smart contract must implement specific functions and events as defined in the official interface. The most commonly used reference is from OpenZeppelin.
-
-## Required Functions and Events
-
-To comply with the ERC20 standard, a contract must implement the following:
-
-### Functions
-
-1. `totalSupply()`: Returns the total token supply.
-2. `balanceOf(address account)`: Returns the token balance of a given address.
-3. `transfer(address to, uint256 amount)`: Transfers tokens to another address.
-4. `approve(address spender, uint256 amount)`: Approves another address to spend tokens on your behalf.
-5. `allowance(address owner, address spender)`: Returns the remaining number of tokens that the spender can use on behalf of the owner.
-6. `transferFrom(address from, address to, uint256 amount)`: Transfers tokens from one address to another, using an allowance.
-
-### Events
-
-- `Transfer(address indexed from, address indexed to, uint256 value)`
-- `Approval(address indexed owner, address indexed spender, uint256 value)`
-
-For a full and secure implementation, it is highly recommended to use the [OpenZeppelin ERC20 interface](https://docs.openzeppelin.com/contracts/latest/api/token/erc20).
-
-## ERC20 Considerations
-
-When designing and deploying an ERC20 token, there are important factors to take into account:
-
-- **Tokenomics Expertise**: Work with someone who understands token economics to avoid pitfalls in distribution, inflation, or governance.
-- **Supply Dynamics**: Consider whether the token supply should be fixed, deflationary, inflationary, or governed by some algorithm.
-- **Rug Pull Risks**: Design your contract transparently. Avoid patterns or permissions that can be used to scam users.
-- **Advanced Standards**: Determine if you need the additional functionality offered by more advanced standards such as:
-  - **ERC777**: Provides more advanced features like hooks for sending and receiving tokens.
-  - **ERC1155**: Supports both fungible and non-fungible tokens in a single contract, ideal for gaming and multi-asset platforms.
-
----
-
-By adhering to the ERC20 standard and considering these design factors, you can ensure greater compatibility, security, and user trust for your token project.
-
 

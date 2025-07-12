@@ -300,7 +300,7 @@ From here, you can:
 
 ---
 
-#  Solidity  – Part 1
+#  Solidity
 
 This section provides a concise introduction to basic Solidity syntax and structure, perfect for beginners learning smart contract development.
 
@@ -435,14 +435,32 @@ After your function name, specifies between parentheses 1) the variable type (ui
 
 ## Modifiers and Access Control
 
-### Restricting Function Access
+# Adding Security with Modifiers
+
+Our contract has a security issue: **Anyone can modify the score**.
+
+Solidity provides a global variable `msg` that refers to the address that interacts with the contract’s functions. The `msg` variable offers two associated fields:
+
+- `msg.sender`: returns the address of the caller of the function.
+- `msg.value`: returns the value in Wei of the amount of Ether sent to the function.
+
+## How to Restrict a Function to a Specific Caller?
+
+We should have a feature that enables only certain addresses to change the score (your address). To achieve this, we will introduce the notion of **modifiers**.
+
+### What is a Modifier?
+
+**Definition**: A modifier is a special function that enables us to change the behaviour of functions in Solidity. It is mostly used to automatically check a condition before executing a function.
+
+We will use the following modifier to restrict the function to only the contract owner.
 
 ```solidity
 address owner;
 
 modifier onlyOwner {
-    require(msg.sender == owner);
-    _;
+    if (msg.sender == owner) {
+       _;
+    }
 }
 
 function setScore(uint new_score) public onlyOwner {
@@ -450,19 +468,35 @@ function setScore(uint new_score) public onlyOwner {
 }
 ```
 
-### Using `msg`:
+### How the Modifier Works
 
-- `msg.sender`: caller’s address
-- `msg.value`: amount of ETH sent (in wei)
+The modifier works with the following flow:
 
-### Modifier with Parameter:
+1. Check that the address of the caller (`msg.sender`) is equal to the `owner` address.
+2. If (1) is true, it passes the check. The `_`; will be replaced by the function body where the modifier is attached.
+
+### Modifier with Arguments
+
+A modifier can receive arguments like functions. Here is an example of a modifier that requires the caller to send a specific amount of Ether:
 
 ```solidity
 modifier Fee(uint fee) {
-    require(msg.value == fee);
-    _;
+    if (msg.value == fee) {
+        _;
+    }
 }
 ```
+
+### Setting the Owner
+
+However, we still haven’t defined who the owner is. We will define that in the constructor.
+
+```solidity
+constructor() {
+    owner = msg.sender;
+}
+```
+
 
 ---
 
@@ -488,6 +522,8 @@ contract Score {
 ##  Mappings
 
 Mappings associate key-value pairs.
+You can access the value associated with a key in a mapping by specifying the key name inside square brackets [] as follows: **mapping_name[key]**.
+Our smart contract will store a mapping of all the user’s addresses and their associated score. The function **getUserScore(address _user)** enables to retrieve the score associated to a specific user’s address.
 
 ```solidity
 mapping(address => uint) public score_list;
@@ -506,7 +542,9 @@ function getUserScore(address user) public view returns (uint) {
 | `address`          | ✔️  | ✔️    |
 | `struct`, `mapping`| ❌  | ✔️    |
 | `enum`, `contract` | ❌  | ✔️    |
-| `array`, `var`     | ➖  | ✔️/❌  |
+| `fixed-sized array` | ✔️  | ✔️    |
+| `dynamic-size array	`| ❌  | ✔️  |
+| `var`| ❌  | ❌  |
 
 ---
 
