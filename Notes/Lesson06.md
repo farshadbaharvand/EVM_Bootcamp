@@ -1,9 +1,11 @@
-# Ethereum Virtual Machine (EVM) Cheat Sheet
+# Ethereum Virtual Machine (EVM)
 
 ## Overview
 - **EVM**: Virtual machine running on Ethereum node software
 - **Environment**: Self-contained, restricted environment for smart contracts
 - **Comparison**: Contracts are more environment-dependent than traditional programs (e.g., Python)
+
+![EVM](./images/L06image01.jpg)
 
 ## Key Characteristics
 - **Type**: Stack machine
@@ -144,12 +146,14 @@ Ethereum Virtual Machine (EVM) supports multiple programming languages for smart
 | Flint          | High-level     | Asset-oriented programming     | High         |
 
 ## References
-1. DEVCON1: Understanding the Ethereum Blockchain Protocol - Vitalik Buterin
-2. Mastering Ethereum by Andreas Antonopoulos
-3. Ethereum White Paper
-4. Ethereum Yellow Paper
-5. EVM specifications and documentation
-6. Noxx articles about the EVM
+
+1. [DEVCON1: Understanding the Ethereum Blockchain Protocol – Vitalik Buterin](https://www.youtube.com/watch?v=DJEtb5fKmw4)
+2. [Mastering Ethereum by Andreas M. Antonopoulos and Gavin Wood](https://github.com/ethereumbook/ethereumbook)
+3. [Ethereum White Paper](https://ethereum.org/en/whitepaper/)
+4. [Ethereum Yellow Paper (Formal Specification)](https://ethereum.github.io/yellowpaper/paper.pdf)
+5. [EVM Specifications and Documentation (ethereum/execution-specs)](https://github.com/ethereum/execution-specs)
+6. [Noxx Articles about the EVM on Mirror.xyz](https://mirror.xyz/noxx.eth)
+
 
 ## Best Practices for Language Selection
 1. **For production contracts**: Use Solidity or Vyper
@@ -183,6 +187,8 @@ Ethereum maintains three primary tries:
 
 Each of these tries serves a specific purpose and is designed for efficient retrieval, cryptographic integrity, and proof generation.
 
+
+
 ---
 
 ### 1. World State Trie
@@ -195,6 +201,8 @@ Each of these tries serves a specific purpose and is designed for efficient retr
   - `storageRoot`: The root of another trie (storage trie) containing the contract's storage.
   - `codeHash`: Hash of the contract bytecode (or empty for EOAs).
 
+![Ethereum State](./images/L06image02.png)
+
 **Note:** The `storageRoot` points to a separate trie containing the contract's internal key-value storage.
 
 ---
@@ -206,6 +214,7 @@ Each of these tries serves a specific purpose and is designed for efficient retr
   - Keys = RLP-encoded index (0, 1, 2, ...)
   - Values = RLP-encoded transaction objects.
 - **Usage:** Enables verification of the inclusion of a specific transaction in a block.
+![Ethereum State](./images/L06image03.png)
 
 ---
 
@@ -241,136 +250,42 @@ Smart contract accounts point to an additional **Storage Trie**, which itself is
 
 ---
 
-## Summary
-
-Ethereum maintains three critical tries:
-- **World State Trie**: Tracks all accounts and their states.
-- **Transaction Trie**: Contains all transactions in a block.
-- **Transaction Receipt Trie**: Contains metadata about each transaction's execution.
-
-Together, these data structures form the backbone of Ethereum's secure, verifiable, and decentralized state machine.
-
-# Ethereum Virtual Machine: Languages, State, and Transactions
-
-## EVM Languages
-
-Ethereum supports multiple languages for writing and compiling smart contracts. Each language serves different levels of abstraction and developer preferences.
-
-### Solidity
-- The most popular high-level language for writing Ethereum smart contracts.
-- C-like syntax, statically typed.
-- Supports inheritance, libraries, interfaces, etc.
-
-### Vyper
-- Pythonic language for writing smart contracts.
-- Strong typing and simpler syntax for improved security.
-- Does **not** support:
-  - Modifiers
-  - Inheritance
-  - Inline assembly
-  - Function/operator overloading
-  - Recursive calls
-  - Infinite loops
-
-### LLL (Low-level Lisp-like Language)
-- Very low-level, minimalistic.
-- Designed for maximum control over EVM bytecode.
-- Not beginner-friendly.
-
-### Yul / Yul+
-- Intermediate language that compiles to bytecode.
-- Supports multiple backends (EVM 1.0, 1.5, eWASM).
-- Ideal for optimization and assembly-level programming.
-
-### FE
-- Statically typed language inspired by Python and Rust.
-- Designed to be safe, secure, and beginner-friendly.
-- Early development stage (alpha release in Jan 2021).
-- Key features:
-  - Bounds and overflow checking
-  - Decidability for more precise gas estimation
-  - Static typing and static looping
-  - Reentrancy restrictions
-  - Standard library and module imports
-  - Uses Yul as intermediate representation
-  - Implemented in Rust for safety
-
-### Huff
-- Low-level assembly-like language.
-- Designed for writing highly optimized and gas-efficient contracts.
-
-### Pyramid Scheme (Experimental)
-- Scheme-to-EVM compiler based on the SICP approach.
-
-### Flint
-- Security-focused language with asset types and restricted operations.
-
-### LLLL
-- LLL-like compiler implemented in Isabelle/HOL.
-
-### HAseembly-evm
-- Haskell DSL for EVM assembly.
-
-### Bamboo (Experimental)
-- Language without loops.
-- Designed for secure and auditable contract development.
-
----
-
-## Ethereum State
-
-Ethereum uses three Merkle Patricia Tries (MPTs) to organize its global data:
-
-### 1. World State Trie
-- Tracks all Ethereum accounts (EOAs and contracts).
-- Each account contains:
-  - `nonce`
-  - `balance`
-  - `storageRoot` (points to the contract’s storage trie)
-  - `codeHash` (hash of contract bytecode)
-
-### 2. Transaction Trie
-- Contains all transactions for a given block.
-- Used for verifying transaction inclusion.
-
-### 3. Transaction Receipt Trie
-- Stores the receipt of each transaction.
-- Includes logs, gas used, and status of execution.
-
-#### Reference:
-[See: Ethereum State Trie Architecture Explained](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/)
-
----
-
 ## Ethereum Block Fields
 
 ### Consensus Layer (Beacon Chain)
-- `randao_reveal`: Randomness for validator selection.
-- `eth1_data`: Deposit contract information.
-- `graffiti`: Arbitrary tag data.
-- `proposer_slashings`: Validators penalized for malicious proposals.
-- `attester_slashings`: Validators penalized for faulty attestations.
-- `attestations`: Votes confirming the current block.
-- `deposits`: New validator deposits.
-- `voluntary_exits`: Validators leaving the network.
-- `sync_aggregate`: Sync committee for light clients.
-- `execution_payload`: Transactions from execution client.
+
+| Field               | Description                                          |
+|---------------------|------------------------------------------------------|
+| `randao_reveal`     | Randomness for validator selection.                 |
+| `eth1_data`         | Deposit contract information.                       |
+| `graffiti`          | Arbitrary tag data.                                 |
+| `proposer_slashings`| Validators penalized for malicious proposals.       |
+| `attester_slashings`| Validators penalized for faulty attestations.       |
+| `attestations`      | Votes confirming the current block.                 |
+| `deposits`          | New validator deposits.                             |
+| `voluntary_exits`   | Validators leaving the network.                     |
+| `sync_aggregate`    | Sync committee for light clients.                   |
+| `execution_payload` | Transactions from execution client.                 |
 
 ### Execution Layer (EVM)
-- `parent_hash`: Hash of the parent block.
-- `fee_recipient`: Address receiving the transaction fees.
-- `state_root`: Root hash of the updated world state.
-- `receipts_root`: Root of the receipt trie.
-- `logs_bloom`: Structure for quick log lookup.
-- `prev_randao`: Used for random selection.
-- `block_number`: Current block number.
-- `gas_limit`: Max allowed gas in the block.
-- `gas_used`: Actual gas used.
-- `timestamp`: Time of block creation.
-- `extra_data`: Raw arbitrary bytes.
-- `base_fee_per_gas`: Base transaction fee.
-- `block_hash`: Hash of the execution block.
-- `transactions`: List of included transactions.
+
+| Field               | Description                                          |
+|---------------------|------------------------------------------------------|
+| `parent_hash`       | Hash of the parent block.                           |
+| `fee_recipient`     | Address receiving the transaction fees.             |
+| `state_root`        | Root hash of the updated world state.               |
+| `receipts_root`     | Root of the receipt trie.                           |
+| `logs_bloom`        | Structure for quick log lookup.                     |
+| `prev_randao`       | Used for random selection.                          |
+| `block_number`      | Current block number.                               |
+| `gas_limit`         | Max allowed gas in the block.                       |
+| `gas_used`          | Actual gas used.                                    |
+| `timestamp`         | Time of block creation.                             |
+| `extra_data`        | Raw arbitrary bytes.                                |
+| `base_fee_per_gas`  | Base transaction fee.                               |
+| `block_hash`        | Hash of the execution block.                        |
+| `transactions`      | List of included transactions.                      |
+
 
 ---
 
@@ -401,23 +316,46 @@ Ethereum uses three Merkle Patricia Tries (MPTs) to organize its global data:
 ```
 
 ---
+# Transaction Selection and Processing in Ethereum
 
-# Transaction Processing
-Before a transaction executes, it must pass several validity checks:
-- Proper RLP encoding (recursive length prefix).
-- Valid digital signature.
-- Nonce matches the sender's expected nonce.
-- Gas limit covers intrinsic gas cost.
-- Sender’s balance can cover gas + value.
-## Additional Resources
-DEVCON1 – Understanding the Ethereum Blockchain Protocol - Vitalik Buterin
+## Practical Points About Transaction Selection
 
-Mastering Ethereum – Andreas Antonopoulos
+- **Block producers choose** which transactions to include in a block.
+- **Block producers can include their own transactions** in the block.
+- **Block producers determine the order** of transactions within a block.
+- **Your transaction competes** with other transactions for inclusion, usually based on gas fees (priority fees).
 
-Ethereum White Paper, Beige Paper, Yellow Paper
+## Transaction Processing
 
-EVM Languages – Noxx articles and community guides
+Before a transaction can be executed, it must pass several **validity checks**:
 
+1. **Well-formed RLP Encoding**  
+   - The transaction must follow the rules for well-formed RLP (Recursive Length Prefix) encoding.  
+   - [Read more on RLP encoding here](https://ethereum.org/en/developers/docs/data-structures-and-encoding/rlp/)
 
+2. **Valid Signature**  
+   - The cryptographic signature must be valid and match the sender's address.
 
-   
+3. **Valid Nonce**  
+   - The nonce in the transaction must match the current nonce of the sender’s account.  
+   - This prevents replay attacks and ensures correct transaction sequencing.
+
+4. **Sufficient Gas Limit**  
+   - The `gas_limit` must be **greater than or equal to** the `intrinsic_gas` required for transaction execution.
+
+5. **Sufficient Balance**  
+   - The sender must have enough Ether to cover the **up-front cost**, including:
+     - `gas_limit * gas_price`
+     - Value transferred (if any)
+
+## Summary
+
+| Check                           | Purpose                                                              |
+|--------------------------------|----------------------------------------------------------------------|
+| RLP Validity                   | Ensures proper encoding and transaction structure                   |
+| Signature Validity             | Confirms sender identity                                             |
+| Nonce Validity                 | Prevents double spending and enforces order                         |
+| Gas Limit Check                | Confirms transaction can afford execution overhead                  |
+| Balance Check                  | Ensures sender can pay gas and transfer value (if applicable)       |
+
+> ⚠️ **Note**: Failing any of the above checks results in the transaction being rejected before execution.
