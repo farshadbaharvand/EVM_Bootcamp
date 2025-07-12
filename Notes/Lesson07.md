@@ -128,14 +128,17 @@ forge build
 Smart contracts are tested using smart contracts, which is the secret to Foundry's speed since there is no additional compilation being carried out.
 A smart contract e.g. MyContract.sol is tested using a file named MyContract.t.sol:
 
+```bash
+
 ├── src\
 │ └── MyContract.sol\
 └── test\
  └── MyContract.t.sol
+ ```
 
  MyContract.t.sol will import the contract under test in order to access it's functions.
 
-First Contract
+## First Contract
 Create a contract called A.sol and save it in src with the following contents:
 
 ```solidity
@@ -220,13 +223,13 @@ contract ATest is Test {
 }
 
 ```
-# Running Tests with Foundry
+## Running Tests with Foundry
 
 After writing your tests, you can run them using the `forge` CLI tool.
 
 ---
 
-## Basic Test Run
+### Basic Test Run
 
 Run all tests in your project with:
 
@@ -237,7 +240,7 @@ forge test
 
 ---
 
-## Viewing Event Logs
+### Viewing Event Logs
 
 To print event logs during the test run, use the `-vv` flag:
 
@@ -247,7 +250,7 @@ forge test -vv
 
 ---
 
-## Viewing Trace of Failed Tests
+### Viewing Trace of Failed Tests
 
 To see a detailed trace of any failed tests, use the `-vvv` flag:
 
@@ -258,7 +261,7 @@ forge test -vvv
 ---
 
 
-## Viewing Trace of Failed Tests
+### Viewing Trace of Failed Tests
 
 To see a detailed trace of any failed tests, use the `-vvv` flag:
 
@@ -271,7 +274,7 @@ forge test -vvv
 
 
 
-## Viewing Trace of All Tests
+### Viewing Trace of All Tests
 
 To see a detailed trace of all tests (passed and failed), use the `-vvvv` flag:
 
@@ -281,9 +284,209 @@ forge test -vvvv
 
 ---
 
-## Running a Specific Test
+### Running a Specific Test
 
 To run a specific test function, use the `--match-test` option followed by the test function name:
 ```bash
 forge test --match-test test_myTest
+```
+
+
+# Basic NFT Examples
+
+## Gist
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+
+contract BasicNFT is ERC721, Ownable {
+    using Counters for Counters.Counter;
+    
+    Counters.Counter private _tokenIdCounter;
+    
+    constructor() ERC721("BasicNFT", "BNFT") Ownable(msg.sender) {
+        // msg.sender will be the initial owner
+    }
+    
+    function mint(address to) public onlyOwner {
+        uint256 tokenId = _tokenIdCounter.current();
+        _tokenIdCounter.increment();
+        _safeMint(to, tokenId);
+    }
+    
+    function totalSupply() public view returns (uint256) {
+        return _tokenIdCounter.current();
+    }
+}
+
+```
+
+## NFT With Metadata
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+
+contract MetadataNFT is ERC721, ERC721URIStorage, Ownable {
+    using Counters for Counters.Counter;
+    
+    Counters.Counter private _tokenIdCounter;
+    
+    constructor() ERC721("MetadataNFT", "MNFT") Ownable(msg.sender) {}
+    
+    function mintWithURI(address to, string memory uri) public onlyOwner {
+        uint256 tokenId = _tokenIdCounter.current();
+        _tokenIdCounter.increment();
+        
+        _safeMint(to, tokenId);
+        _setTokenURI(tokenId, uri);
+    }
+    
+    function tokenURI(uint256 tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
+        return super.tokenURI(tokenId);
+    }
+    
+    function supportsInterface(bytes4 interfaceId) public view override(ERC721, ERC721URIStorage) returns (bool) {
+        return super.supportsInterface(interfaceId);
+    }
+}
+
+```
+
+## Simple Game NFT
+```solidity
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
+
+contract SimpleGameNFT is ERC721, Ownable {
+    using Counters for Counters.Counter;
+    using Strings for uint256;
+    
+    Counters.Counter private _tokenIdCounter;
+    
+    struct Character {
+        string name;
+        uint256 level;
+        uint256 strength;
+        uint256 agility;
+        uint256 intelligence;
+        uint256 experience;
+        bool isActive;
+    }
+    
+    mapping(uint256 => Character) public characters;
+    mapping(address => bool) public gameControllers;
+    
+    string private _baseTokenURI;
+    
+    event CharacterCreated(uint256 tokenId, string name);
+    event CharacterLevelUp(uint256 tokenId, uint256 newLevel);
+    event ExperienceGained(uint256 tokenId, uint256 experience);
+    
+    constructor(string memory baseURI) ERC721("SimpleGameNFT", "SGNFT") Ownable(msg.sender) {
+        _baseTokenURI = baseURI;
+    }
+    
+    modifier onlyGameController() {
+        require(gameControllers[msg.sender] || msg.sender == owner(), "Not authorized");
+        _;
+    }
+    
+    function createCharacter(
+        address to,
+        string memory name,
+        uint256 strength,
+        uint256 agility,
+        uint256 intelligence
+    ) public onlyOwner {
+        uint256 tokenId = _tokenIdCounter.current();
+        _tokenIdCounter.increment();
+        
+        characters[tokenId] = Character({
+            name: name,
+            level: 1,
+            strength: strength,
+            agility: agility,
+            intelligence: intelligence,
+            experience: 0,
+            isActive: true
+        });
+        
+        _safeMint(to, tokenId);
+        emit CharacterCreated(tokenId, name);
+    }
+    
+    function gainExperience(uint256 tokenId, uint256 exp) public onlyGameController {
+        require(_ownerOf(tokenId) != address(0), "Character does not exist");
+        
+        characters[tokenId].experience += exp;
+        emit ExperienceGained(tokenId, exp);
+        
+        // Check for level up (100 exp per level)
+        uint256 newLevel = (characters[tokenId].experience / 100) + 1;
+        if (newLevel > characters[tokenId].level) {
+            characters[tokenId].level = newLevel;
+            // Increase stats on level up
+            characters[tokenId].strength += 1;
+            characters[tokenId].agility += 1;
+            characters[tokenId].intelligence += 1;
+            emit CharacterLevelUp(tokenId, newLevel);
+        }
+    }
+    
+    function getCharacter(uint256 tokenId) public view returns (Character memory) {
+        require(_ownerOf(tokenId) != address(0), "Character does not exist");
+        return characters[tokenId];
+    }
+    
+    function setGameController(address controller, bool authorized) public onlyOwner {
+        gameControllers[controller] = authorized;
+    }
+    
+    function setBaseURI(string memory baseURI) public onlyOwner {
+        _baseTokenURI = baseURI;
+    }
+    
+    function _baseURI() internal view override returns (string memory) {
+        return _baseTokenURI;
+    }
+    
+    // Helper function to check if token exists
+    function tokenExists(uint256 tokenId) public view returns (bool) {
+        return _ownerOf(tokenId) != address(0);
+    }
+    
+    // Get character stats as arrays for easy frontend consumption
+    function getCharacterStats(uint256 tokenId) public view returns (
+        string memory name,
+        uint256 level,
+        uint256[4] memory stats, // [strength, agility, intelligence, experience]
+        bool isActive
+    ) {
+        require(_ownerOf(tokenId) != address(0), "Character does not exist");
+        Character memory char = characters[tokenId];
+        
+        return (
+            char.name,
+            char.level,
+            [char.strength, char.agility, char.intelligence, char.experience],
+            char.isActive
+        );
+    }
+}
+
 ```
