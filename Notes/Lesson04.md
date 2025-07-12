@@ -36,7 +36,7 @@ Your contract can call functions of another deployed contract. This requires:
 
 #### Example
 
-```plaintext
+```solidity
 pragma solidity ^0.8.0;
 
 contract InfoFeed {
@@ -197,7 +197,7 @@ Contracts that allow runtime interface checks:
 
 ---
 
-## OpenZeppelin Collections Contracts
+### OpenZeppelin Collections Contracts
 
 - **EnumerableSet**: Set data structure with enumeration
 - **EnumerableMap**: Map with enumeration capabilities
@@ -217,17 +217,17 @@ Contracts that allow runtime interface checks:
 
 ---
 
-## Importing from GitHub in Remix
+# Importing from GitHub in Remix
 
 You can import OpenZeppelin contracts directly into Remix using:
 
-```plaintext
+```solidity
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/contracts/access/Ownable.sol";
 ```
 
 Or using npm-style imports (supported in Hardhat, Foundry, etc.):
 
-```plaintext
+```solidity
 import "@openzeppelin/contracts@4.2.0/token/ERC20/ERC20.sol";
 ```
 
@@ -269,7 +269,7 @@ Official Repository: [OpenZeppelin GitHub](https://github.com/OpenZeppelin/openz
 
 You can open the contracts in Remix directly by importing them from the GitHub repo or npm-style syntax.
 
-```plaintext
+```solidity
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 ```
 
@@ -281,7 +281,7 @@ This allows you to write and deploy contracts using OpenZeppelin's pre-built com
 
 Using OpenZeppelin Contracts, we can easily create an ERC-20 token. Below is an example of a custom token contract for a game currency called **Gold (GLD)**.
 
-```plaintext
+```solidity
 // contracts/GLDToken.sol
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
@@ -313,7 +313,7 @@ This approach gives you:
 
 By default, the ERC20 contract sets **18 decimals**, similar to how Ether uses 18 decimal places. You can override the default by implementing the `decimals()` function.
 
-```plaintext
+```solidity
 function decimals() public view virtual override returns (uint8) {
   return 16;
 }
@@ -323,13 +323,13 @@ function decimals() public view virtual override returns (uint8) {
 
 To send 5 tokens using a token contract with 18 decimals, you would call:
 
-```plaintext
+```solidity
 transfer(recipient, 5 * (10 ** 18));
 ```
 
 If your custom decimals is set to 16, the same logic applies:
 
-```plaintext
+```solidity
 transfer(recipient, 5 * (10 ** 16));
 ```
 
