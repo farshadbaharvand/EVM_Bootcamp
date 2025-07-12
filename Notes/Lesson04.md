@@ -72,8 +72,17 @@ A **library** is a special kind of smart contract with **no state**. Instead, it
 - See the [OpenZeppelin Math library](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/Math.sol) as an example.
 
 ### Example: Using the Math Library
+```bash
 
-```plaintext
+For example we could use the Math library from Open Zeppelin
+https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/Math.sol
+
+We import it so that the compiler has access to the code
+```
+
+
+```solidity
+
 pragma solidity ^0.8.0;
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/contracts/utils/math/Math.sol";
 
@@ -90,7 +99,7 @@ contract Test {
 - The `using` keyword associates a data type with a library.
 - After that, you can use the library’s functions via dot notation on variables of that type.
 
-```plaintext
+```solidity
 uint256 big = _a.max(_b);
 ```
 
@@ -102,7 +111,6 @@ uint256 big = _a.max(_b);
   - **External/Public**: The deployed contract must link to the library at deploy time.
   - **Internal**: The functions will be **inlined** into your contract at compile time.
 
----
 
 By understanding how compilation and runtime behavior differ, and how contracts interact through inheritance, external calls, and libraries, you can write more modular, maintainable, and secure smart contracts.
 
