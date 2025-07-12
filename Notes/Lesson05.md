@@ -2,9 +2,10 @@
 
 In object-oriented programming, **inheritance** is the mechanism of basing an object or class upon another object or class. An object created through inheritance, a _child object_, acquires some or all of the properties and behaviors of the _parent object_.
 
-In Solidity, we use the `is` keyword to indicate that the current contract inherits from a parent contract. For example, in the code below, `Destructible` is the child contract and `Owned` is the parent contract.
+In Solidity, we use the **`is`** keyword to indicate that the current contract inherits from a parent contract. For example, in the code below, **`Destructible`** is the child contract and **`Owned`** is the parent contract.
 
 ## Basic Example
+```solidity
 
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.7.0 <0.9.0;
@@ -27,22 +28,22 @@ contract Child1 is Owned {
         .... ;
     }
 }
-
+```
 ---
 
 
 ### Key Points
 
-- The `is` keyword is used to inherit from a base contract.
+- The **`is`** keyword is used to inherit from a base contract.
 - Child contracts inherit all **non-private** members of the parent.
-- Functions marked with `virtual` can be **overridden** in child contracts.
-- Functions intended to override a parent’s function must use the `override` keyword.
+- Functions marked with **`virtual`** can be **overridden** in child contracts.
+- Functions intended to override a parent’s function must use the **`override`** keyword.
 
 ## ERC20 Inheritance Example
 
 Solidity also supports inheritance from imported contracts, such as the OpenZeppelin ERC20 implementation.
 
-
+```solidity
 // SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.20;
@@ -61,7 +62,7 @@ contract GLDToken is ERC20 {
 
 }
 
-
+```
 
 ### Explanation
 
@@ -95,40 +96,9 @@ If the condition fails, it reverts the transaction with either:
 **Use Case:** Ensuring valid input or external conditions at runtime.
 
 **Example:**
-
+```solidity
 require(_amount > 0, "Amount must be > 0");
-
-
-
----
-
-
-
-// SPDX-License-Identifier: GPL-3.0
-pragma solidity ^0.8.4;
-
-contract VendingMachine {
-    address owner;
-    error Unauthorized();
-    function buy(uint amount) public payable {
-        if (amount > msg.value / 2 ether)
-            revert("Not enough Ether provided.");
-        // Alternative way to do it:
-        require(
-            amount <= msg.value / 2 ether,
-            "Not enough Ether provided."
-        );
-        // Perform the purchase.
-    }
-    function withdraw() public {
-        if (msg.sender != owner)
-            revert Unauthorized();
-
-        payable(msg.sender).transfer(address(this).balance);
-    }
-}
-
-
+```
 
 ---
 
@@ -143,9 +113,9 @@ If the condition fails, it throws a `Panic(uint256)` error. A well-functioning c
 **Use Case:** Debugging, internal checks, invariants.
 
 **Example:**
-
+```solidity
 assert(a > b);
-
+```
 ---
 
 ### `revert`
@@ -201,7 +171,7 @@ The `try/catch` block enables safe calls to external contracts and handles any e
 
 **Example:**
 
-```plaintext
+```solidity
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.8.1;
 
@@ -278,7 +248,7 @@ The `try`/`catch` mechanism allows:
 
 ## Example: External Call with Error Handling
 
-```plaintext
+```solidity
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.8.1;
 
@@ -364,7 +334,7 @@ You can define an error using the `error` keyword. It can be declared:
 
 Example:
 
-```plaintext
+```solidity
 error NotEnoughFunds(uint requested, uint available);
 ```
 
@@ -378,7 +348,7 @@ Custom errors are triggered using the `revert` keyword.
 
 ### Example: Token Contract with Custom Error
 
-```plaintext
+```solidity
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.4;
 
@@ -486,14 +456,15 @@ By updating the internal state **before** making any external calls, you ensure 
 
 By following these practices, smart contract developers can significantly reduce the risk of reentrancy attacks and improve the security of decentralized applications.
 
+# Basic Design Patterns
 
-# Access Control Patterns
+# 1. Access Control Patterns
 
 Access control is fundamental in smart contract development to restrict who can call certain functions and perform privileged operations.
 
 ---
 
-## 1. Ownable
+## Ownable
 
 ### Description
 - A contract has a single **owner** (an Ethereum address) who holds special privileges.
@@ -509,6 +480,7 @@ Access control is fundamental in smart contract development to restrict who can 
 - Managing token distributions or contract upgrades
 
 ### Code Snippet
+```solidity
 
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
@@ -519,14 +491,9 @@ function doSomethingCritical() public onlyOwner {
 // Only owner can call this
 }
 }
+```
 
-
----
-
-
----
-
-## 2. Pausable
+## Pausable
 
 ### Description
 - Allows an authorized account (commonly the owner) to **pause** and **unpause** the contract.
@@ -541,6 +508,7 @@ function doSomethingCritical() public onlyOwner {
 - Stopping a crowdfunding campaign due to discovered bugs.
 
 ### Code Snippet
+```solidity
 
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
@@ -559,16 +527,17 @@ function pauseContract() public onlyOwner {
 function unpauseContract() public onlyOwner {
     _unpause(); // Inherited from Pausable
 }
+```
 
 
 
-# Data Structure Patterns
+# 2. Data Structure Patterns
 
 Efficient on-chain data storage and retrieval are essential for building performant and cost-effective smart contracts. This section covers common Solidity data structures and patterns.
 
 ---
 
-## 1. Mapping
+## Mapping
 
 ### Description
 - A **key-value store**, similar to hash maps or dictionaries in other programming languages.
@@ -585,9 +554,8 @@ mapping(KeyType => ValueType) public myMap;
 - Associating user data structs with addresses: `mapping(address => UserStruct)`
 - Tracking NFT ownership: `mapping(uint => address)`
 
----
 
-## 2. Structs & Arrays (with Mappings)
+## Structs & Arrays (with Mappings)
 
 ### Description
 - **Structs** allow grouping multiple related variables into a single custom data type.
@@ -595,6 +563,8 @@ mapping(KeyType => ValueType) public myMap;
 - Often combined with mappings to associate IDs or addresses with structs or arrays.
 
 ### Implementation
+
+```solidity
 struct User {
 address userAddress;
 uint256 balance;
@@ -603,6 +573,7 @@ bool isActive;
 
 mapping(address => User) public users; // Map address to user struct
 uint256[] public userIds; // Store a list of user IDs/indices
+```
 
 
 
@@ -611,9 +582,8 @@ uint256[] public userIds; // Store a list of user IDs/indices
 - Tracking individual user profiles.
 - Storing proposals in a voting contract.
 
----
 
-## 3. Enums
+## Enums
 
 ### Description
 - Custom types that define a fixed set of constant values.
@@ -630,13 +600,13 @@ enum State { Created, Active, Paused, Completed }
 - Representing game states or phases.
 
 
-# Security Patterns
+# 3. Security Patterns
 
 Security patterns help protect smart contracts against common vulnerabilities and attacks.
 
 ---
 
-## 1. Checks-Effects-Interactions (CEI)
+## Checks-Effects-Interactions (CEI)
 
 ### Description
 - A critical pattern to prevent **re-entrancy attacks**.
@@ -653,9 +623,9 @@ Security patterns help protect smart contracts against common vulnerabilities an
 ### Example Use Case
 - Any function that sends Ether or interacts with other contracts.
 
----
 
-## 2. Pull vs. Push Payments (Withdrawal Pattern)
+
+## Pull vs. Push Payments (Withdrawal Pattern)
 
 ### Description
 - Instead of **pushing** Ether directly to users (which risks re-entrancy if the recipient is a contract), allow users to **pull** their funds by calling a withdrawal function.
@@ -668,6 +638,9 @@ Security patterns help protect smart contracts against common vulnerabilities an
 - Crowdfunding platforms, salary payments, refunds.
 
 ### Code Snippet
+
+```solidity
+
 mapping(address => uint256) public balances;
 
 function deposit() public payable {
@@ -683,17 +656,18 @@ balances[msg.sender] = 0; // Effect: Clear balance FIRST!
 (bool success, ) = payable(msg.sender).call{value: amount}(""); // Interaction
 require(success, "Withdrawal failed");
 
+``` 
 
-
----
-
-## 3. Re-entrancy Guard
+## Re-entrancy Guard
 
 ### Description
 - An explicit mechanism to prevent re-entrancy using a mutex lock.
 - OpenZeppelin's `ReentrancyGuard` contract provides a `nonReentrant` modifier to guard functions.
 
 ### Implementation
+
+```solidity
+
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
@@ -712,9 +686,65 @@ contract MyGuardedContract is ReentrancyGuard {
     }
 }
 
+```
+# 4. Contract Interaction Patterns
+
+## Purpose
+
+How contracts interact with other contracts or handle incoming Ether.
+
+---
+
+## Interfaces
+
+### Description
+
+Interfaces define the external functions of another contract that you want to interact with. They are similar to abstract classes or interfaces in traditional programming languages.
+
+### Implementation
+
+```solidity
+interface IAnotherContract {
+    function someFunction() external returns (uint256);
+}
+```
+
+### Example Use Case
+
+- Interacting with an ERC-20 token contract
+- Calling a Chainlink Oracle
+- Accessing any deployed contract through its external API
 
 
-# Error Handling Patterns
+## `receive()` and `fallback()` Functions
+
+### Description
+
+These are special functions used to handle incoming Ether and unmatched function calls:
+
+- `receive()`: Executed on plain Ether transfers (no data). Must be `payable` and `external`.
+- `fallback()`: Executed if no other function matches the call, or if Ether is sent with data but no matching function exists. Must be `payable` and `external` to accept Ether.
+
+### Implementation
+
+```solidity
+receive() external payable {
+    // Logic when ETH is sent directly without data
+}
+
+fallback() external payable {
+    // Logic when ETH is sent with data or no matching function exists
+}
+```
+
+### Example Use Case
+
+- Accepting ETH into a contract (e.g., donations)
+- Creating a catch-all mechanism for unexpected or generic calls
+- Supporting proxy patterns or upgradeable contracts
+
+
+# 5. Error Handling Patterns
 
 **Purpose:** Providing clear feedback when operations fail.
 
@@ -736,104 +766,127 @@ contract MyGuardedContract is ReentrancyGuard {
   Used to verify internal invariants that should **never** be violated. If it fails, **all** remaining gas is consumed. Ideal for checking conditions that indicate serious bugs.
 
 ### Example Use Cases
-
+```solidity
 require(msg.sender == owner, "Not authorized");
 require(amount > 0, "Amount must be positive");
+```
+---
 
+# 5. Contract Creation & Management Patterns
 
+## Purpose
+
+Managing the deployment and lookup of multiple contract instances or external services.
+
+---
+
+## Factory Pattern
+
+### Description
+
+A smart contract that is responsible for creating and deploying new instances of other smart contracts. This allows for a controlled and auditable way to generate multiple, identical contracts.
+
+### Implementation
+
+Uses the `new` keyword in Solidity to deploy a new contract instance. Can also use `create2` for predictable addresses.
+
+### Example Use Case
+
+- Creating a new ERC-721 NFT collection contract for each user.
+- Deploying a new liquidity pool contract for each token pair (e.g., Uniswap).
+- Generating individual game instances or vaults for users.
+
+### Code Snippet
+
+```solidity
 // SPDX-License-Identifier: MIT
-        pragma solidity ^0.8.0;
+pragma solidity ^0.8.0;
 
-        // The contract that the factory will deploy
-        contract MyChildContract {
-            address public creator;
-            string public name;
+// The contract that the factory will deploy
+contract MyChildContract {
+    address public creator;
+    string public name;
 
-            constructor(string memory _name) {
-                creator = msg.sender;
-                name = _name;
-            }
-        }
+    constructor(string memory _name) {
+        creator = msg.sender;
+        name = _name;
+    }
+}
 
-        contract MyFactory {
-            // Event to log the creation of new child contracts
-            event ChildContractCreated(address indexed childAddress, address indexed creator, string name);
+contract MyFactory {
+    // Event to log the creation of new child contracts
+    event ChildContractCreated(address indexed childAddress, address indexed creator, string name);
 
-            // Mapping to keep track of created contracts (optional, but useful)
-            address[] public deployedContracts;
+    // Mapping to keep track of created contracts (optional, but useful)
+    address[] public deployedContracts;
 
-            function createChildContract(string memory _name) public returns (address newContractAddress) {
-                // Deploy a new instance of MyChildContract
-                MyChildContract newChild = new MyChildContract(_name);
-                newContractAddress = address(newChild);
+    function createChildContract(string memory _name) public returns (address newContractAddress) {
+        // Deploy a new instance of MyChildContract
+        MyChildContract newChild = new MyChildContract(_name);
+        newContractAddress = address(newChild);
 
-                deployedContracts.push(newContractAddress);
-                emit ChildContractCreated(newContractAddress, msg.sender, _name);
-            }
-        }
-
-
-
-
-# Registry Pattern
-
-**Purpose:** To provide a central, reliable lookup mechanism for managing addresses and metadata of contracts, services, or users within a smart contract system.
-
-## Description
-
-The **Registry Pattern** is a smart contract design that stores and manages a set of addresses, optionally with metadata. It serves as a centralized mapping or directory that other contracts or users can reference to retrieve specific addresses or services.
-
-This pattern is especially useful in multi-contract architectures, modular systems, or upgradeable designs, where various parts of a system need to discover or verify the addresses of other components.
-
-## Implementation
-
-- Commonly uses `mapping(keyType => valueType)`:
-  - `keyType` is often `bytes32` (hashed name), `string`, or `address`.
-  - `valueType` is usually `address`, or a `struct` containing additional data.
-- Frequently combined with access control mechanisms like `Ownable` to restrict who can update the registry.
-- Events are often emitted for updates to aid in off-chain indexing and discovery.
-
-## Example Use Cases
-
-- Mapping human-readable names (e.g., `"PriceFeed"`) to contract addresses (like a simplified version of ENS).
-- Whitelisting approved contracts or accounts.
-- Managing versions of deployed contracts or upgrade proxies.
-- Service discovery in modular or plugin-based smart contract systems.
-
-## Code Snippet
-
- // SPDX-License-Identifier: MIT
-        pragma solidity ^0.8.0;
-        import "@openzeppelin/contracts/access/Ownable.sol";
-
-        contract ContractRegistry is Ownable {
-            // Map names to contract addresses
-            mapping(bytes32 => address) public registeredContracts; // Using bytes32 for fixed-size keys
-
-            // Event for logging registrations
-            event ContractRegistered(bytes32 indexed nameHash, address indexed contractAddress, string name);
-
-            function registerContract(string memory _name, address _contractAddress) public onlyOwner {
-                bytes32 nameHash = keccak256(abi.encodePacked(_name));
-                require(registeredContracts[nameHash] == address(0), "Contract already registered");
-                require(_contractAddress != address(0), "Invalid contract address");
-
-                registeredContracts[nameHash] = _contractAddress;
-                emit ContractRegistered(nameHash, _contractAddress, _name);
-            }
-
-            function getContractAddress(string memory _name) public view returns (address) {
-                bytes32 nameHash = keccak256(abi.encodePacked(_name));
-                return registeredContracts[nameHash];
-            }
-
-            // Could add update/deregister functions, also onlyOwner
-        }
+        deployedContracts.push(newContractAddress);
+        emit ChildContractCreated(newContractAddress, msg.sender, _name);
+    }
+}
+```
 
 
+## Registry Pattern
+
+### Description
+
+A central contract that stores and manages a list of addresses (e.g., other contract addresses, user addresses, or service endpoints) and potentially their associated metadata. It acts as a lookup service.
+
+### Implementation
+
+Typically uses `mapping(keyType => valueType)` where `valueType` is often an address or a struct containing an address and other info. Often combined with `Ownable` for management.
+
+### Example Use Case
+
+- Mapping human-readable names to contract addresses (like ENS, but simpler).
+- Maintaining a list of approved or whitelisted addresses for a specific operation.
+- A central directory for finding different versions of a protocol's contracts.
+- Registering and discovering services within a multi-contract dApp.
+
+### Code Snippet
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract ContractRegistry is Ownable {
+    // Map names to contract addresses
+    mapping(bytes32 => address) public registeredContracts; // Using bytes32 for fixed-size keys
+
+    // Event for logging registrations
+    event ContractRegistered(bytes32 indexed nameHash, address indexed contractAddress, string name);
+
+    function registerContract(string memory _name, address _contractAddress) public onlyOwner {
+        bytes32 nameHash = keccak256(abi.encodePacked(_name));
+        require(registeredContracts[nameHash] == address(0), "Contract already registered");
+        require(_contractAddress != address(0), "Invalid contract address");
+
+        registeredContracts[nameHash] = _contractAddress;
+        emit ContractRegistered(nameHash, _contractAddress, _name);
+    }
+
+    function getContractAddress(string memory _name) public view returns (address) {
+        bytes32 nameHash = keccak256(abi.encodePacked(_name));
+        return registeredContracts[nameHash];
+    }
+
+    // Could add update/deregister functions, also onlyOwner
+}
+```
 
 
-# External Data Integration Patterns
+---
+
+
+# 6. External Data Integration Patterns
 
 **Purpose:** Securely bringing real-world or off-chain data onto the blockchain for smart contract execution.
 
@@ -870,6 +923,7 @@ There are two main approaches to implementing oracles:
 - **Games:** Providing randomness or off-chain game state verification.
 
 ### Code Snippet 
+```solidity
 
 // SPDX-License-Identifier: MIT
         pragma solidity ^0.8.0;
@@ -903,9 +957,10 @@ There are two main approaches to implementing oracles:
             //     return price;
             // }
         }
+```
 
 
-# Financial Primitives & Incentive Patterns
+# 7. Financial Primitives & Incentive Patterns
 
 **Purpose:** Implementing mechanisms for locking assets, distributing rewards, or managing shared funds.
 
