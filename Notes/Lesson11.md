@@ -17,6 +17,7 @@
 ## Decentralized Exchanges (DEXs)
 
 **Decentralized Exchanges** allow users to trade tokens without relying on centralized platforms. They remove the need for custodianship, ensuring users retain control of their assets at all times.
+![Decentralized Exchanges](./images/L11image01.png)
 
 ### Advantages
 
@@ -31,7 +32,7 @@
 ### Early Exchanges – 0x Protocol
 
 **0x Protocol** introduced off-chain order relays and on-chain settlements.
-
+![Decentralized Exchanges](./images/L11image02.png)
 #### Process:
 
 1. Maker approves the DEX contract to access Token A.
@@ -50,7 +51,7 @@
 - Originated from ideas shared by **Vitalik Buterin**, **Nick Johnson**, and **Martin Koppelmann** in 2016
 - Implemented and launched by **Hayden Adams** in **November 2018**
 - Introduced **Automated Market Makers (AMMs)** to solve liquidity incentive problems
-
+![Decentralized Exchanges](./images/L11image03.png)
 ---
 
 ## Automated Market Makers (AMMs)
@@ -68,9 +69,15 @@ AMMs are smart contracts that enable token swaps using liquidity pools instead o
 - Trades must keep the **product** of token reserves constant:
   
   `X * Y = K`
+Where:
+- `X` = Reserve of token A
+- `Y` = Reserve of token B
+- `K` = Constant
 
-  (Known as the **XYK model**)
+This model is often referred to as the **XYK model**, which maintains a consistent ratio between the two tokens in the pool. As traders swap tokens, the balances of `X` and `Y` shift, but their product (`K`) stays unchanged, thereby determining the price algorithmically without the need for an order book.
 
+![Decentralized Exchanges](./images/L11image04.png)
+![Decentralized Exchanges](./images/L11image05.png)
 ---
 
 ## LP Tokens
@@ -100,15 +107,37 @@ The difference between expected price and actual execution price. Caused by:
 - Market volatility
 - Competing trades between order and execution
 
-### Impermanent Loss
+## Impermanent Loss
 
-Occurs when the value of tokens in a liquidity pool is less than if they were simply held in a wallet.
+**Impermanent loss** occurs when the value of your percentage-based share of a liquidity pool is **less at the time of withdrawal** than the value of the amount of tokens you initially deposited, had you simply held those tokens instead of providing liquidity.
 
-#### Mitigation Strategies:
+In other words, it is the opportunity cost of having provided liquidity instead of holding your assets.
 
-- Using **stablecoin** pools
-- Choosing **non-50/50 ratio** pools
-- Earning **yield rewards** to offset losses
+---
+
+### Example Scenario
+
+- You deposit equal values of Token A and Token B into a 50/50 liquidity pool.
+- The price of Token A increases significantly while Token B remains stable.
+- The pool's algorithm automatically adjusts the token ratio to maintain balance.
+- When you withdraw, your share includes fewer Token A and more Token B.
+- If you had just held your original tokens outside the pool, they would be worth more.
+
+This difference in value is the **impermanent loss**.
+
+---
+
+### Ways to Mitigate Impermanent Loss
+
+1. **Use stablecoin pairs**  
+   - Pools like USDC/DAI experience less price fluctuation, reducing risk.
+
+2. **Take advantage of yield farming**  
+   - Rewards or incentives from protocols may offset the loss.
+
+3. **Use non-50/50 pool ratios**  
+   - Some AMMs (like Balancer) allow custom ratios such as 80/20 or 95/5, which can reduce exposure to impermanent loss.
+
 
 ---
 
