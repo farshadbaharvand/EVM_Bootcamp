@@ -32,9 +32,9 @@ This behavior differs from some other languages that round toward negative infin
 - Division by zero causes a **runtime panic** that cannot be disabled.
 
 ---
+# ADDRESSES
 
-
-# Guide to `address` and `address payable` in Solidity
+## Guide to `address` and `address payable` in Solidity
 
 The `address` type in Solidity is used to store Ethereum addresses. There are two key variations:
 
@@ -94,7 +94,7 @@ If you convert a larger data type like `bytes32` to `address`, the result will b
 
 ---
 
-## Members and Functions of Address Types
+## Members of Address
 
 ### 1. `balance`
 - Returns the amount of **Ether** (in wei) held by the address.
@@ -114,16 +114,15 @@ If you convert a larger data type like `bytes32` to `address`, the result will b
 
 ---
 
-## Low-Level Functions
-
+### 4. call(), delegatecall(), and staticcall()
 These functions allow raw interaction with other contracts:
 
-### 1. `call`
+#### 1. `call`
 - Low-level external function call.
 - Accepts optional `{value: amount, gas: amount}`.
 - Returns `(success, data)`.
 
-### 2. `delegatecall`
+#### 2. `delegatecall`
 - Executes **target contract’s code** in **current context**.
 - Shares:
   - Storage
@@ -131,11 +130,11 @@ These functions allow raw interaction with other contracts:
   - Balance
 - Commonly used for library/delegated logic.
 
-### 3. `staticcall`
+#### 3. `staticcall`
 - Executes code in **read-only** mode.
 - Reverts if any **state change** is attempted.
 
-#### Encoding Data
+##### Encoding Data
 Use the following to encode the data for low-level calls:
 
 - `abi.encode`
@@ -143,20 +142,20 @@ Use the following to encode the data for low-level calls:
 - `abi.encodeWithSelector`
 - `abi.encodeWithSignature`
 
-#### Notes
+##### Notes
 - Avoid hardcoding gas values.
 - Only use low-level functions when absolutely necessary.
 - Prefer direct calls (e.g., `contract.functionName()`) for safer interactions.
 
 ---
 
-## `code` and `codehash`
+### 5. `code` and `codehash`
 
-### 1. `addr.code`
+#### 1. `addr.code`
 - Returns contract's bytecode as `bytes memory`.
 - Empty for EOAs or non-existent contracts.
 
-### 2. `addr.codehash`
+#### 2. `addr.codehash`
 - Returns a `bytes32` hash of the contract’s code.
 - More gas-efficient than `keccak256(addr.code)`.
 - May return:
@@ -208,9 +207,6 @@ Solidity provides a variety of **modifiers** that can be applied to functions, v
 - Deposit functions
 - NFT mints with fees
 
----
-
-## State Variable Modifiers
 
 ### 4. `constant`
 - Used for state variables that are **set once at declaration** and never changed.
@@ -228,10 +224,6 @@ Solidity provides a variety of **modifiers** that can be applied to functions, v
 **Example:**
 - Owner address set at deployment
 
----
-
-## Event Modifiers
-
 ### 6. `anonymous`
 - When applied to an event, the **event signature** is **not stored** as the first topic.
 - Makes the event slightly cheaper to log and harder to filter.
@@ -246,9 +238,6 @@ Solidity provides a variety of **modifiers** that can be applied to functions, v
 **Note:**
 - Up to **3 parameters** can be indexed.
 
----
-
-## Inheritance Modifiers
 
 ### 8. `virtual`
 - Marks a **function or modifier** as **overridable** in derived (child) contracts.
@@ -277,13 +266,105 @@ Solidity provides a variety of **modifiers** that can be applied to functions, v
 | `indexed`  | Event Parameter     | Allows filtering logs by parameter                                         |
 | `virtual`  | Function/Modifier   | Can be overridden in child contracts                                       |
 | `override` | Function/Modifier/Variable | Overrides a `virtual` member from parent contracts                   |
-# Loop Control Statements in Solidity
+
+---
+
+# Loops in Solidity
+
+In Solidity, loops allow you to repeatedly execute a block of code. This is useful for iterating over arrays, performing calculations multiple times, or waiting for a certain condition to be met.
+
+Solidity supports the following types of loops:
+
+---
+
+## `for` Loop
+
+The `for` loop is used when you know exactly how many times you want to loop. It consists of three parts:
+
+- **Initialization**: Declares and initializes the loop counter.
+- **Condition**: Evaluated before each iteration. If true, the loop continues.
+- **Increment/Decrement**: Updates the loop counter after each iteration.
+
+### Example: Summing Numbers from 1 to 5
+
+```solidity
+uint sum = 0;
+for (uint i = 1; i <= 5; i++) {
+    sum += i;
+}
+// After this loop, sum will be 15
+```
+
+### Breakdown
+
+- **Initialization**: `uint i = 1` is run once at the beginning.
+- **Condition**: `i <= 5` is checked before each iteration.
+- **Increment**: `i++` increases `i` by 1 after each iteration.
+
+---
+
+## `while` Loop
+
+The `while` loop is used when you don't know in advance how many times you need to loop, but you want to continue as long as a certain condition is true.
+
+### Example: Doubling a Number Until It's Greater Than 100
+
+```solidity
+uint num = 5;
+while (num <= 100) {
+    num *= 2;
+}
+// After this loop, num will be 160
+```
+
+### Breakdown
+
+- **Condition**: `num <= 100` is evaluated before each iteration.
+- If the condition is true, the loop body is executed.
+- If the condition is false, the loop ends.
+
+---
+
+## `do...while` Loop
+
+The `do...while` loop is similar to the `while` loop but guarantees that the loop body will be executed at least once, even if the condition is initially false.
+
+### Example: A `do...while` Loop That Executes Once
+
+```solidity
+uint x = 10;
+do {
+    x++;
+} while (x < 10);
+// After this loop, x will be 11
+```
+
+### Breakdown
+
+- **Loop Body**: The code inside `do { ... }` is executed first.
+- **Condition**: `x < 10` is evaluated after the first iteration.
+- If the condition is true, the loop continues. Otherwise, it stops.
+
+---
+
+## Summary
+
+| Loop Type      | When to Use                                                             | Condition Checked |
+|----------------|--------------------------------------------------------------------------|-------------------|
+| `for`          | When the number of iterations is known                                   | Before each loop  |
+| `while`        | When looping based on a condition with unknown end                       | Before each loop  |
+| `do...while`   | When you need the loop to execute **at least once**                      | After first loop  |
+
+> ⚠️ Note: Excessive or unbounded loops in Solidity can be dangerous due to gas limits. Avoid using loops over large datasets in smart contracts.
+
+
+## Loop Control Statements in Solidity
 
 Solidity provides control statements that allow developers to manage the flow of loops, such as `for`, `while`, and `do...while`. These statements help handle conditions like early termination or skipping specific iterations.
 
 ---
 
-## `break`
+### `break`
 
 - Immediately exits the loop, regardless of whether the condition has been fully evaluated.
 - Useful when a particular condition is met and further looping is unnecessary.
@@ -298,7 +379,7 @@ for (uint i = 0; i < 10; i++) {
 
 ---
 
-## `continue`
+### `continue`
 
 - Skips the remaining code in the current loop iteration.
 - Proceeds directly to the next iteration of the loop.
