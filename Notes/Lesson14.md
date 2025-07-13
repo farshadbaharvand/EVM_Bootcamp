@@ -29,24 +29,24 @@ It enforces a clear boundary between **read** and **write** operations, reducing
 A `Provider` is used for operations such as:
 
 - **Fetching the current block number**  
-  ```plain
+  ```javascript
   provider.getBlockNumber()
   ```
 
 - **Querying an account's ETH balance**  
-  ```plain
+  ```javascript
   provider.getBalance(addressOrEnsName)
   ```
 
 - **Calling read-only (view/pure) smart contract functions**
 
 - **Querying past event logs**  
-  ```plain
+  ```javascript
   provider.getLogs(filter)
   ```
 
   However, for querying events in a more structured way, the following is preferred:  
-  ```plain
+  ```javascript
   contract.queryFilter(eventFilter)
   ```
 
@@ -71,38 +71,7 @@ This replaces the `Web3Provider` from v5 with a more accurate and descriptive na
 
 #### Example:
 
-```plain
-import { BrowserProvider } from "ethers";
-
-const browserProvider = new BrowserProvider(window.ethereum);
-```
-
-- `window.ethereum` is the injected EIP-1193 provider.
-- `BrowserProvider` wraps this object to enable read-only access to the blockchain.
-- To escalate to a signer (for sending transactions), you can call:
-  
-  ```plain
-  const signer = await browserProvider.getSigner();
-  ```
-
----
-
-## Summary
-
-| Component | Purpose                              | Access Level      |
-|-----------|--------------------------------------|-------------------|
-| Provider  | Reading blockchain state             | Read-only         |
-| Signer    | Writing to the blockchain (txs)      | Requires signing  |
-| Contract  | Interface for interacting with smart contracts (read/write based on underlying Provider/Signer) | Read or Write depending on setup |
-
-The `Provider` is the **foundation** for interacting securely with the Ethereum blockchain, making it essential to understand and use it properly when building dApps with Ethers.js.
-
----
-```
-
-
----
-
+```javascript
 
 // v6: Connecting to a browser wallet like MetaMask
 import { ethers } from "ethers";
@@ -119,12 +88,22 @@ if (typeof window.ethereum === "undefined") {
     // Connect to the injected EIP-1193 provider.
     provider = new ethers.BrowserProvider(window.ethereum);
 }
-
+```
 
 
 ---
 
+## Summary
 
+| Component | Purpose                              | Access Level      |
+|-----------|--------------------------------------|-------------------|
+| Provider  | Reading blockchain state             | Read-only         |
+| Signer    | Writing to the blockchain (txs)      | Requires signing  |
+| Contract  | Interface for interacting with smart contracts (read/write based on underlying Provider/Signer) | Read or Write depending on setup |
+
+The `Provider` is the **foundation** for interacting securely with the Ethereum blockchain, making it essential to understand and use it properly when building dApps with Ethers.js.
+
+---
 
 # Backend/Node.js Environments in Ethers.js
 
@@ -148,11 +127,11 @@ This makes it ideal for:
 - Backend testing suites
 - Infrastructure services
 
----
+
 
 ## Example: Connecting to a Public Ethereum Node
 
-```plain
+```java script
 import { JsonRpcProvider } from "ethers";
 
 // Using Infura
@@ -161,37 +140,6 @@ const provider = new JsonRpcProvider("https://mainnet.infura.io/v3/YOUR_INFURA_P
 // Using Alchemy
 const provider = new JsonRpcProvider("https://eth-mainnet.g.alchemy.com/v2/YOUR_ALCHEMY_API_KEY");
 ```
-
----
-
-## Example: Connecting to a Local Node
-
-```plain
-import { JsonRpcProvider } from "ethers";
-
-const provider = new JsonRpcProvider("http://127.0.0.1:8545");
-```
-
-> This is typically used when working with development tools like Hardhat, Foundry (Anvil), or Ganache.
-
----
-
-## Use Cases for Backend Providers
-
-- Fetching blockchain data for APIs
-- Running batch jobs (e.g., indexing historical logs)
-- Monitoring blockchain state (e.g., balances, events, gas prices)
-- Submitting signed transactions
-- Building DeFi trading bots or arbitrage agents
-- Performing smart contract testing and simulations
-
----
-
-## Important Notes
-
-- The `JsonRpcProvider` is unauthenticated, read-only by default. You need a **Signer** (e.g., `Wallet`) for sending transactions.
-- When using third-party services (Infura, Alchemy), you must provide an API key.
-- Ethers.js will automatically handle reconnections and retries under the hood, but ensure proper error handling in production applications.
 
 ---
 
@@ -205,28 +153,15 @@ const provider = new JsonRpcProvider("http://127.0.0.1:8545");
 The `JsonRpcProvider` is the standard tool for any backend system that needs direct, reliable access to Ethereum data and transaction capabilities.
 
 ---
-```
 
 
----
-
-
-// v6: Connecting to a JSON-RPC endpoint in a backend environment
-import { ethers } from "ethers";
-
-// It is crucial to replace this with your actual RPC URL from a node provider.
-const ALCHEMY_MAINNET_URL = "https://eth-mainnet.g.alchemy.com/v2/YOUR_API_KEY";
-const provider = new ethers.JsonRpcProvider(ALCHEMY_MAINNET_URL);
-
-
----
 
 
 # The Signer: Account Abstraction and Write Access
 
 In Ethers.js, a **Signer** is an essential abstraction used to perform **write operations** on the blockchain. While a `Provider` enables **read-only** access, a `Signer` allows you to **sign and send transactions**, interact with contracts that modify state, and authorize messages—all without exposing the underlying private key.
 
----
+
 
 ## What Is a Signer?
 
@@ -258,63 +193,47 @@ Here are common use cases and the corresponding functions in Ethers.js:
 
 - **Send a transaction**  
   Sends a transaction to the Ethereum network that modifies state (e.g., transferring ETH or calling a smart contract method).  
-  ```plain
+
+  ```javascript
+
   signer.sendTransaction(txObject)
+
   ```
 
 - **Sign a plain message (EIP-191)**  
-  Used for off-chain authentication or proving ownership of an address.  
-  ```plain
+  Used for off-chain authentication or proving ownership of an address. 
+
+  ```javascript
   signer.signMessage("Hello, Ethereum!")
   ```
 
+
 - **Sign typed structured data (EIP-712)**  
-  Useful for DeFi applications, DAOs, and wallets that need to sign structured data securely.  
-  ```plain
-  signer.signTypedData(domain, types, message)
-  ```
+  Useful for DeFi applications, DAOs, and wallets that need to sign structured data securely.
+
+
+```javascript
+signer.signTypedData(domain, types, message)
+```
 
 - **Interact with smart contracts (write)**  
   Used to execute functions that modify contract state.  
-  ```plain
-  const contract = new Contract(address, abi, signer)
-  await contract.someWriteFunction(args)
-  ```
-
----
-
-## How to Obtain a Signer
-
-A Signer is typically retrieved from a Provider. In browser-based environments, this is done using `BrowserProvider`:
-
-```plain
-import { BrowserProvider } from "ethers";
-
-const provider = new BrowserProvider(window.ethereum);
-const signer = await provider.getSigner();
-```
-
-This triggers a connection prompt in MetaMask or another wallet, allowing the user to grant permission to the dApp.
-
----
-
-## Summary
-
-| Concept | Provider | Signer |
-|--------|----------|--------|
-| Purpose | Read-only blockchain access | Authorize state changes |
-| Permissions | No user permission required | Requires explicit user approval |
-| Security | Cannot modify state | Signs on behalf of account, but never reveals private key |
-| Typical Usage | Fetch balances, block numbers, logs | Send ETH, interact with contracts, sign messages |
-
----
-
-By decoupling signing logic from private key management, Ethers.js empowers developers to build secure, scalable dApps while maintaining user sovereignty and protecting sensitive data.
 
 
 ---
+# Working with Signers in Ethers.js v6
 
+## Introduction
 
+A `Signer` in Ethers.js is used to sign messages and transactions on behalf of a user. It is almost always obtained from a `Provider` instance. This guide outlines two primary ways to obtain a signer: from a browser wallet using `BrowserProvider`, and from a private key using the `Wallet` class.
+
+---
+
+## From BrowserProvider
+
+Calling `provider.getSigner()` using `BrowserProvider` triggers the browser wallet (e.g., MetaMask) to prompt the user to connect their account. Once connected, the application can request signatures for that account.
+
+```javascript
 // v6: Acquiring a Signer from a browser wallet
 const provider = new ethers.BrowserProvider(window.ethereum);
 
@@ -322,125 +241,33 @@ const provider = new ethers.BrowserProvider(window.ethereum);
 const signer = await provider.getSigner();
 const address = await signer.getAddress();
 console.log("Signer Address:", address);
-
-
-
----
-
-
-
-# From a Private Key: Using the Wallet Class
-
-The `Wallet` class in Ethers.js is a **concrete implementation of a Signer** that holds a private key directly in memory. It is powerful and flexible for backend and scripting use cases, but must be used with caution.
-
----
-
-## Use Case: Backend, Scripting, and Automation
-
-`Wallet` is ideal for:
-
-- Backend applications
-- Server-side automation
-- Testing environments
-- Bots (e.g., arbitrage, liquidation, keepers)
-- Offline signing
-
-This is because the wallet instance can **sign transactions and messages autonomously** without requiring user interaction.
-
----
-
-## Example: Create a Wallet from a Private Key
-
-```plain
-import { Wallet, JsonRpcProvider } from "ethers";
-
-// Example private key (DO NOT USE IN PRODUCTION)
-const privateKey = "0xabc123..."; 
-
-// Connect to a provider (e.g., Alchemy or Infura)
-const provider = new JsonRpcProvider("https://mainnet.infura.io/v3/YOUR_INFURA_KEY");
-
-// Create a wallet instance
-const wallet = new Wallet(privateKey, provider);
-
-// Send a transaction
-const tx = await wallet.sendTransaction({
-    to: "0xRecipientAddress",
-    value: ethers.parseEther("0.01")
-});
 ```
 
-> The wallet will sign and send the transaction using the specified provider.
-
 ---
 
-## ⚠️ Frontend Security Warning
+## From a Private Key (Wallet)
 
-**Never expose private keys in frontend applications.**
+The `Wallet` class is a concrete implementation of a `Signer` that holds a private key directly in memory. This method is particularly useful in backend scripts, server-side applications, or automated testing scenarios.
 
-Using `Wallet` in the browser would embed the private key in the client-side code, which is a **severe security vulnerability**. Anyone inspecting the source can extract the key and drain the funds.
+>  **Important Security Note:** It is critically insecure to use the `Wallet` class in a frontend application, as doing so would expose the private key in the client-side code.
 
-Instead, use `BrowserProvider` and `signer = await provider.getSigner()` to delegate signing to MetaMask or other secure wallet extensions.
-
----
-
-## Additional Features
-
-- Generate a random wallet:
-  ```plain
-  const wallet = Wallet.createRandom();
-  ```
-
-- Load from mnemonic:
-  ```plain
-  const wallet = Wallet.fromPhrase("test test test ...");
-  ```
-
-- Connect to provider later:
-  ```plain
-  const wallet = new Wallet(privateKey);
-  const connectedWallet = wallet.connect(provider);
-  ```
-
----
-
-## Summary
-
-| Use Case              | Wallet Class                |
-|-----------------------|-----------------------------|
-| Server-side scripts   | ✅ Ideal                    |
-| Testing environments  | ✅ Useful                   |
-| Frontend/web dApps    | ❌ Insecure (do not use)    |
-| Offline signing       | ✅ Supported                |
-| Auto transaction bots | ✅ Common use case          |
-
-The `Wallet` class is a powerful tool for controlled environments where private keys can be secured—but **it should never be used on the frontend or in browser-based applications**.
-
---- 
-
-
-
----
-
-
+```javascript
 // v6: Creating a Wallet instance (a type of Signer) for backend use
 import { ethers } from "ethers";
 
 const provider = new ethers.JsonRpcProvider(ALCHEMY_MAINNET_URL);
+
 // This private key must be kept secret and secure, typically loaded from an environment variable.
 // NEVER expose this in a frontend application or commit it to version control.
 const privateKey = process.env.SERVER_WALLET_PRIVATE_KEY;
 const wallet = new ethers.Wallet(privateKey, provider);
-
-
----
-
+```
 
 
 
-- Provides more flexible handling of complex scenarios like **function overloading**.
 
 ---
+
 
 ## Instantiating a Contract Object
 
@@ -460,13 +287,6 @@ To create a Contract instance, you need three essential pieces of information:
 
 ---
 
-## Summary
-
-The Contract object abstracts the complexities of interacting with Ethereum smart contracts by providing a dynamic JavaScript interface. With the new ES6 Proxy-based implementation in Ethers.js v6, developers gain a more natural and flexible way to call contract methods, handle overloading, and seamlessly switch between read-only and state-changing interactions depending on the Runner provided.
-
-
-
----
 
 
 # Smart Contract Interaction
