@@ -731,102 +731,99 @@ EIP-4337 introduces a novel transaction flow model tailored for smart contract w
 
 ---
 
-## Step-by-Step Process
+# Step-by-step Process
 
-### 1. UserOperation Creation
+## UserOperation Lifecycle
 
-- A `UserOperation` is created on the client-side to represent the user’s intent (e.g., token transfer, interaction with a dApp).
-- The object includes fields like:
-  - `sender`
-  - `nonce`
-  - `initCode`
-  - `callData`
-  - `callGasLimit`
-  - `verificationGasLimit`
-  - `paymasterAndData`
-  - `signature`
-- It is submitted to an **alternative mempool**, separate from Ethereum’s standard mempool.
+1. The lifecycle of a `UserOperation` begins when a user interacts with their smart account and creates a `UserOperation` object that represents the desired action.
 
-### 2. Bundler Collection
+2. This `UserOperation` is submitted to a **dedicated, alternative mempool**, separate from Ethereum's standard transaction mempool.
 
-- **Bundlers** (off-chain actors) watch the UserOperation mempool.
-- They:
-  - Select valid UserOperations
-  - Validate them locally
-  - Bundle them into a standard Ethereum transaction
-- The bundle is then submitted to the **EntryPoint** contract on-chain.
+3. **Bundlers** (off-chain actors) continuously monitor this alternative mempool.
 
-### 3. Verification Phase
+4. Bundlers:
+   - Select a collection of `UserOperations`
+   - Perform initial validity checks
+   - Bundle them into a single standard Ethereum transaction
 
-- For each `UserOperation` in the bundle:
-  - `EntryPoint` calls the `validateUserOp` function on the sender’s smart account.
-  - This function checks:
-    - Validity of signature
-    - Correct nonce (anti-replay)
-    - Gas balance or payment via a Paymaster
-- If a **Paymaster** is used:
-  - The `validatePaymasterUserOp` function is called
-  - Confirms whether the Paymaster agrees to sponsor the gas fees
+5. The **bundled transaction** is submitted by the Bundler to the **EntryPoint** contract on-chain.
 
-### 4. Execution Phase
+---
 
-- If verification succeeds:
-  - `EntryPoint` calls the `execute` function on the smart account
-  - Executes the actual user intent (e.g., contract call, token transfer)
+## Two-Phase Execution by EntryPoint
+
+Upon receiving the bundled transaction, the EntryPoint processes each `UserOperation` in two distinct phases:
+
+###  Verification Phase
+
+- The EntryPoint calls the `validateUserOp` function on the corresponding smart account.
+- During this phase:
+  - The smart account **verifies the signature**
+  - **Checks the nonce** (to protect against replay attacks)
+  - **Ensures gas funds** are available or pre-paid
+  - If a **Paymaster** is used:
+    - `validatePaymasterUserOp` is called to confirm gas sponsorship
+
+###  Execution Phase
+
+- If verification is successful:
+  - EntryPoint calls the `execute` function on the smart account
+  - The smart account performs the **intended transaction logic**, which may include:
+    - Transferring tokens
+    - Interacting with a dApp
+    - Running custom code
+
 - After execution:
-  - Unused gas may be refunded to the user
-  - If a Paymaster is used, its post-operation settlement is triggered
+  - **Unused gas fees** are refunded to the smart account
+  - If a Paymaster was involved:
+    - A **post-execution** function is called on the Paymaster contract
+    - Final settlement is handled and funds may be retrieved from the user
 
 ---
 
-## Clarification of Phases: Verification vs. Execution
+# Clarification of Phases (Verification vs. Execution)
 
-### Verification Phase
+The separation of the UserOperation lifecycle into **verification** and **execution** phases is a key component of **EIP-4337**.
 
-- **Purpose:** Confirm transaction legitimacy before execution
-- **Gas Limit:** Controlled by `verificationGasLimit`
-- **Scope:**
-  - Signature checks
-  - Nonce validation
-  - Paymaster checks
-- **Security Role:** Prevents Bundler DoS attacks by bounding resource consumption
+## Gas Limit Fields in UserOperation
 
-### Execution Phase
+- `verificationGasLimit`:
+  - Controls gas used during the `validateUserOp` call
+- `callGasLimit`:
+  - Applies to the `execute` call
 
-- **Purpose:** Carry out the actual transaction logic
-- **Gas Limit:** Controlled by `callGasLimit`
-- **Scope:**
-  - Transfers
-  - dApp interaction
-  - Custom logic inside the smart account
+This distinction allows for fine-grained control over how much gas is allocated for each phase, enhancing security and efficiency.
 
----
 
-## Security Considerations: Preventing DoS on Bundlers
 
-Bundlers are vulnerable to **off-chain DoS attacks** if:
-- Malicious `UserOperations` exploit computational complexity in the verification logic
+## DoS Protection for Bundlers
 
-EIP-4337 protects Bundlers through:
+- **Bundlers** operate off-chain and monitor the alternative mempool.
+- Without gas restrictions, a malicious `UserOperation` could:
+  - Consume excessive computation
+  - Contain unbounded loops
+  - Launch **Denial-of-Service (DoS)** attacks on Bundlers
 
-- **Gas Isolation:** Separate `verificationGasLimit` ensures resource bounds
-- **On-chain Filtering:** EntryPoint acts as a validator, rejecting invalid or malicious operations early
-- **Economic Incentives:** Bundlers are only compensated for successfully included and validated operations
+## Mitigation Strategy
 
-By enforcing this two-phase design, **EIP-4337 preserves the security and integrity** of the transaction pipeline, even when smart accounts use arbitrary authentication logic.
+- The EntryPoint enforces:
+  - Strict gas limits
+  - Validation constraints during the **verification phase**
+- This ensures:
+  - Bundlers are **not exposed** to costly verification
+  - Only valid and **economically viable** `UserOperations` reach execution
 
----
 
-## Conclusion
 
-The transaction flow in EIP-4337 redefines how accounts operate on Ethereum:
+## Role of EntryPoint
 
-- Decoupling transaction signature and execution
-- Enabling smart contract wallets to implement custom authorization
-- Protecting the off-chain infrastructure (Bundlers) through strict validation rules
-- Allowing flexible fee abstraction and user experience improvements
+The EntryPoint acts as a **gatekeeper** by:
 
-This modular, secure architecture is essential for mainstream Web3 adoption.
+- Ensuring verification logic is isolated
+- Enforcing validation rules
+- Approving only secure, executable `UserOperations`
+
+This design protects the **network’s off-chain infrastructure** and ensures operational efficiency.
 
 
 ---
@@ -962,19 +959,13 @@ Also available on associated **testnets** for development and experimentation.
 
 Explore further with these resources:
 
-- 📞 **Ethereum Community Call**: [The Road to Account Abstraction](https://www.youtube.com/watch?v=some_link)
-- 📘 **Braavos Overview**: [Braavos Wallet](https://www.braavos.app/)
-- 🧾 **ERC-4337 Status**: [EIPs Site](https://eips.ethereum.org/EIPS/eip-4337)
-- 🧪 **Alchemy Intro to AA**: [Alchemy Docs](https://www.alchemy.com/account-abstraction)
-- 📚 **Introduction Series**: [Another Guide](https://www.someguide.com/account-abstraction)
-- 🧠 **Starkware AA Intro**: [Starknet Docs](https://docs.starknet.io/documentation/architecture/AA/)
+-  **Ethereum Community Call**: [The Road to Account Abstraction](https://www.youtube.com/watch?v=some_link)
+-  **Braavos Overview**: [Braavos Wallet](https://www.braavos.app/)
+-  **ERC-4337 Status**: [EIPs Site](https://eips.ethereum.org/EIPS/eip-4337)
+-  **Alchemy Intro to AA**: [Alchemy Docs](https://www.alchemy.com/account-abstraction)
+-  **Introduction Series**: [Another Guide](https://www.someguide.com/account-abstraction)
+-  **Starkware AA Intro**: [Starknet Docs](https://docs.starknet.io/documentation/architecture/AA/)
 
----
-
-Account Abstraction is unlocking powerful wallet and protocol design tools for Solidity developers. With EIP-4337, developers can create experiences that are secure, flexible, and as user-friendly as Web2—all while maintaining the trustless, decentralized ethos of Web3.
-
-
----
 
 
 
