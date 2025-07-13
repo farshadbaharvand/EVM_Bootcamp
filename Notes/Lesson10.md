@@ -335,6 +335,8 @@ However, the convenience of **centralized indexing services** often leads to the
   -Provides SQL querying and real time data.
 
 ## Dune
+
+![Dune](./images/L10image03.png)
 ### Core Functionality
 
 **Dune** enables users to write SQL queries to extract specific data from the blockchain and transform it into visual dashboards.
@@ -479,84 +481,74 @@ For serious Web3 development, understanding and selecting the right indexing sol
 
 ---
 
+# The Graph Introduction
 
+The Graph is an indexing protocol for querying networks like Ethereum and IPFS. Anyone can build and publish open APIs, called **subgraphs**, making data easily accessible.
+
+🔗 See [The Graph Academy](https://thegraph.academy)
+
+![The Graph Introduction](./images/L10image04.png)
+
+---
+
+## Graph Explorer
+
+A simple way to explore data  
+**See [Explorer](https://thegraph.com/explorer)**
+
+---
+
+## Comparison
+
+- **Centralised Providers**
+  - ✅ Offer convenience and speed
+  - ✅ Suitable for rapid prototyping
+  - ❌ Limited transparency
+  - ❌ Risk of censorship or downtime
+
+- **Decentralised Protocols**
+  - ✅ Prioritise censorship resistance
+  - ✅ Transparent and verifiable
+  - ✅ Ideal for dApps where data integrity is critical
+  - ❌ May have slower performance compared to centralised systems
+
+- **Hybrid Models**
+  - Aim to combine benefits of both centralised and decentralised systems
+  - Example: Infura's Decentralised Infrastructure Network (DIN)
+
+---
 # Interacting with Ethereum Indexing Services
 
 ## Understanding Event Logs
 
-Smart contracts emit **events** as immutable logs to record significant actions on-chain. These logs include:
+- Smart contracts emit **events** as immutable logs to record significant actions on-chain. These logs include:
 
-- **Event name**
-- **Contract address**
-- **Indexed and non-indexed data**
-
-### Key Characteristics:
-
-- Up to **3 indexed parameters** (topics) are allowed for non-anonymous events.
-- These indexed fields are **hashed** and included in a **Bloom Filter** for efficient filtering by nodes and clients.
+  - **Event name**
+  - **Contract address**
+  - **Indexed and non-indexed data**
+- Up to **3 indexed parameters** (topics) are allowed for non-anonymous events. These indexed fields are **hashed** and included in a **Bloom Filter** for efficient filtering by nodes and clients.
 - **Dynamic types** (e.g., strings, arrays) are hashed when indexed, meaning their human-readable values are lost in the indexed topic. To retain readability:
   - Include them **again as non-indexed** parameters in the event.
+  - This dual-inclusion allows both **filtering efficiency** and **data clarity**.
 
-This dual-inclusion allows both **filtering efficiency** and **data clarity**.
+---
+# Querying with Ethers.js
+
+The Ethers.js library separates **read-only operations** (via `Provider`) from **write operations** (via `Signer`). To query historical event data from the blockchain, use a `JsonRpcProvider` to connect to a node (either self-hosted or services like Infura).
+
+You can use the `contract.queryFilter()` method in combination with event filters to retrieve specific logs.
 
 ---
 
-## Querying with Ethers.js
+# Querying with Web3.js
 
-Ethers.js distinguishes between:
+Web3.js is another popular library for dApp development, offering similar functionality for querying past events on the blockchain.
 
-- **Read-only operations** using a `Provider`
-- **Write operations** using a `Signer`
+You can use either:
+- `web3.eth.getPastLogs()` — for raw log data
+- `contract.getPastEvents()` — for decoded event data
 
-### Read-Only Querying:
-
-Use `JsonRpcProvider` to connect to an Ethereum node (e.g., Infura, Alchemy, or local):
-
-```javascript
-import { ethers } from 'ethers';
-
-const provider = new ethers.JsonRpcProvider('<YOUR_RPC_ENDPOINT>');
-const contract = new ethers.Contract(contractAddress, abi, provider);
-
-const logs = await contract.queryFilter(contract.filters.YourEvent(), fromBlock, toBlock);
-```
-
-- `queryFilter()` enables retrieval of historical logs
-- Event filters can be applied to specify indexed arguments
-- Ideal for read-only data analysis and UI rendering
-
----
-
-## Querying with Web3.js
-
-Web3.js is another widely-used library for interacting with Ethereum.
-
-### Methods for Event Logs:
-
-1. **Raw logs** via `web3.eth.getPastLogs()`:
-
-```javascript
-web3.eth.getPastLogs({
-  address: contractAddress,
-  topics: [topic1, topic2],
-  fromBlock: 'earliest',
-  toBlock: 'latest'
-});
-```
-
-2. **Decoded events** via `contract.getPastEvents()`:
-
-```javascript
-contract.getPastEvents('YourEvent', {
-  filter: { indexedParam: value },
-  fromBlock: 0,
-  toBlock: 'latest'
-});
-```
-
-- `getPastEvents()` automatically decodes event data using the contract ABI
-- Allows filtering based on indexed parameters or topics
-- Useful for retrieving historical event activity
+These methods allow filtering by topics or indexed parameters.
 
 ---
 
@@ -570,24 +562,6 @@ contract.getPastEvents('YourEvent', {
 2. Create **mapping handlers** in AssemblyScript to respond to contract events
 3. Deploy to **Subgraph Studio**
 4. Optionally publish to the **decentralized Graph Network** (requires GRT staking)
-
-### Example GraphQL Query:
-
-```graphql
-{
-  tokenTransfers(first: 10, orderBy: timestamp, orderDirection: desc) {
-    id
-    from
-    to
-    value
-  }
-}
-```
-
-- Enables expressive, frontend-friendly data access
-- Supports pagination, filtering, and sorting
-- Reduces the need for direct node access
-
 ---
 
 ## SQL-Based Services
@@ -604,9 +578,7 @@ Platforms like **Space and Time (SxT)** and **Dune Analytics** provide **SQL int
   - Aggregations
   - Trend visualizations
 
----
-
-## Challenges of Abstraction
+### Challenges of Abstraction
 
 While indexing services simplify access to complex on-chain data, they introduce **new abstraction layers**:
 
@@ -617,13 +589,12 @@ While indexing services simplify access to complex on-chain data, they introduce
 
 This requires additional onboarding and tooling literacy.
 
----
 
-## Data Type Mapping
+### Data Type Mapping
 
 Correctly mapping **Solidity data types** to indexing service equivalents is **critical** to avoid misinterpretation.
 
-### Common Examples:
+#### Common Examples:
 
 | Solidity Type | Indexing Type (The Graph) | Indexing Type (Dune)   |
 |---------------|----------------------------|-------------------------|
@@ -637,25 +608,4 @@ Failure to map accurately can lead to:
 - Query errors
 - Data type coercion issues
 - Misleading results in analytics
-
-### Recommendation:
-
-- Refer to the official documentation of the indexing service
-- Use provided SDKs and codegen tools to enforce correct mappings
-- Validate event schemas and test with real data
-
----
-
-## Conclusion
-
-Ethereum indexing services are essential for building performant, user-friendly, and data-rich dApps. Mastering how to:
-
-- Understand event logs
-- Use query libraries like Ethers.js and Web3.js
-- Integrate GraphQL through The Graph
-- Leverage SQL with platforms like Dune and Space and Time
-
-...is key to unlocking the full potential of on-chain data in your decentralized application.
-
-However, keep in mind the learning curve associated with abstraction layers and data type compatibility. Clear documentation and strong developer tooling are vital for successful implementation.
 
