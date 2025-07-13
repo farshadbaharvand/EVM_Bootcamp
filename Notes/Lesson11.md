@@ -32,7 +32,7 @@
 ### Early Exchanges – 0x Protocol
 
 **0x Protocol** introduced off-chain order relays and on-chain settlements.
-![Decentralized Exchanges](./images/L11image02.png)
+![0x Protocol](./images/L11image02.png)
 #### Process:
 
 1. Maker approves the DEX contract to access Token A.
@@ -51,7 +51,7 @@
 - Originated from ideas shared by **Vitalik Buterin**, **Nick Johnson**, and **Martin Koppelmann** in 2016
 - Implemented and launched by **Hayden Adams** in **November 2018**
 - Introduced **Automated Market Makers (AMMs)** to solve liquidity incentive problems
-![Decentralized Exchanges](./images/L11image03.png)
+![Uniswap](./images/L11image03.png)
 ---
 
 ## Automated Market Makers (AMMs)
@@ -76,8 +76,8 @@ Where:
 
 This model is often referred to as the **XYK model**, which maintains a consistent ratio between the two tokens in the pool. As traders swap tokens, the balances of `X` and `Y` shift, but their product (`K`) stays unchanged, thereby determining the price algorithmically without the need for an order book.
 
-![Decentralized Exchanges](./images/L11image04.png)
-![Decentralized Exchanges](./images/L11image05.png)
+![CFMMs 1](./images/L11image04.png)
+![CFMMs 2](./images/L11image05.png)
 ---
 
 ## LP Tokens
@@ -112,7 +112,7 @@ The difference between expected price and actual execution price. Caused by:
 **Impermanent loss** occurs when the value of your percentage-based share of a liquidity pool is **less at the time of withdrawal** than the value of the amount of tokens you initially deposited, had you simply held those tokens instead of providing liquidity.
 
 In other words, it is the opportunity cost of having provided liquidity instead of holding your assets.
-
+![Impermanent](./images/L11image06.png)
 ---
 
 ### Example Scenario
@@ -167,7 +167,7 @@ DeFi protocols are **modular** and interoperable—like "Money LEGOs."
 - Users can **supply crypto** as collateral to borrow the base asset
 - Or **supply the base asset** (e.g., USDC) to earn interest
 - First deployed on **Ethereum** with **USDC** as base asset
-
+![Compound](./images/L11image07.png)
 ---
 
 ## Yield Farming
@@ -183,7 +183,7 @@ DeFi protocols are **modular** and interoperable—like "Money LEGOs."
 
 - Introduced by **Compound** and **yearn.finance**
 - **June 2020**: BAT token launch popularized yield farming
-
+![yield](./images/L11image08.png)
 ---
 
 ## Flash Loans
@@ -203,18 +203,8 @@ Flash loans allow **borrowing of assets without collateral**, as long as:
 
 > Imagine a smart contract where **line 2** increases your balance by 5… and it all disappears if you don’t repay before **line 10**.
 
----
-
-## Conclusion
-
-DeFi represents a revolutionary shift in financial infrastructure, enabling:
-
-- Open access to finance
-- Transparent, programmable financial contracts
-- New economic primitives like AMMs, LP tokens, and flash loans
-
-However, risks around **smart contract bugs**, **composability failures**, and **market volatility** remain critical. Deep understanding and responsible usage are key to safe participation in the DeFi ecosystem.
-
+![flash 1](./images/L11image09.png)
+![flash 2](./images/L11image10.png)
 
 ---
 
@@ -250,7 +240,7 @@ DEX Aggregators utilize a mechanism called **Smart Order Routing**.
 4. Executes all sub-trades simultaneously via smart contracts
 5. Returns the combined result (ETH) to the user with the **best possible exchange rate**
 
----
+
 
 ## Benefits of DEX Aggregators
 
@@ -259,7 +249,7 @@ DEX Aggregators utilize a mechanism called **Smart Order Routing**.
 - **Time Savings**: Users don’t have to manually compare rates on different DEXs
 - **Reduced Gas Costs**: Some aggregators bundle transactions to save on gas fees
 
----
+
 
 ## Popular DEX Aggregators
 
@@ -269,7 +259,7 @@ DEX Aggregators utilize a mechanism called **Smart Order Routing**.
 - **CowSwap**
 - **OpenOcean**
 
----
+
 
 ## Conclusion
 
@@ -351,26 +341,26 @@ Artificial Intelligence (AI) is poised to revolutionize the decentralized financ
 
 ### Key Applications
 
-1. **AI-Generated NFTs**  
+- **AI-Generated NFTs**  
    - AI algorithms generate unique digital art, disrupting traditional art creation and expanding creative possibilities.
 
-2. **Enhanced User Experience**  
+- **Enhanced User Experience**  
    - AI can:
      - Recommend NFTs
      - Generate personalized collections
      - Create interactive, story-driven assets
 
-3. **Sophisticated NFTs**  
+- **Sophisticated NFTs**  
    - AI enables NFTs that evolve over time based on:
      - User behavior
      - External conditions (e.g., market prices, real-world events)
 
-4. **Enhanced Security & Authentication**  
+- **Enhanced Security & Authentication**  
    - AI verifies NFT authenticity
    - Tracks ownership history
    - Detects and prevents fraud
 
-5. **Data-Driven Analytics**  
+- **Data-Driven Analytics**  
    - AI analyzes:
      - NFT pricing trends
      - Market demand
@@ -396,28 +386,22 @@ Artificial Intelligence (AI) is poised to revolutionize the decentralized financ
 
 While AI offers numerous benefits, integrating it into DeFi and NFT ecosystems presents several challenges:
 
-### 1. **Data Privacy and Security**
+####  **Data Privacy and Security**
 - AI systems require large datasets, which can raise:
   - Privacy concerns
   - Risks of unauthorized data usage
 
-### 2. **Explainability and Bias**
+#### **Explainability and Bias**
 - AI models often act as "black boxes," making it difficult to:
   - Interpret their decisions
   - Detect or mitigate biases
   - Ensure fairness and accountability
 
-### 3. **Scalability and Sustainability**
+#### **Scalability and Sustainability**
 - Combining AI with blockchain introduces technical burdens:
   - High computational demands
   - Increased energy consumption
   - Potential network congestion
-
----
-
-## Conclusion
-
-AI holds transformative potential for DeFi and NFTs by improving efficiency, personalization, and security. However, developers and stakeholders must address the challenges of data ethics, transparency, and sustainability to ensure that these innovations are inclusive, responsible, and scalable.
 
 
 ---
@@ -551,15 +535,6 @@ The Extropy team has published detailed explorations on Account Abstraction:
 
 - **[Account Abstraction – Part 2](https://www.extropy.io/articles/account-abstraction-part-2)**  
   Deep dive into ERC-4337, bundlers, user operations, and practical applications.
-
----
-
-## Conclusion
-
-Account Abstraction is a foundational step toward a more user-friendly and flexible Ethereum ecosystem. By enabling smart contract wallets as the default account type, Ethereum can unlock new UX paradigms, improve security, and foster broader adoption.
-
-Smart contract wallets are **not just an upgrade** — they are the **future** of user interaction on Ethereum.
-
 
 
 ---
@@ -724,13 +699,6 @@ This parallel infrastructure allows smart accounts to function without changing 
 | **Paymaster Contract** | Optional contract sponsoring gas fees, enabling ERC-20 payments or third-party gas coverage       |
 | **Aggregator (ERC-7766)** | Optional contract for efficient multi-signature aggregation reducing gas costs                  |
 
----
-
-This architecture enables powerful, customizable user accounts in Ethereum while preserving backward compatibility and avoiding difficult consensus-layer changes.
-
-```
-
-
 
 ---
 
@@ -757,6 +725,9 @@ EIP-4337 introduces a novel transaction flow model tailored for smart contract w
 
 5. **Ethereum Network Processes Transaction**  
    Once relayed and verified, the network executes the transaction and commits changes on-chain.
+
+   ![Transaction1](./images/L11image11.jpg)
+   ![Transaction2](./images/L11image12.jpg)
 
 ---
 
