@@ -7,8 +7,9 @@ This guide introduces how developers interact with Ethereum smart contracts usin
 ## The Role of Web3 Libraries (Web3.js and Ethers.js)
 
 Web3 libraries are essential tools for developers building decentralized applications (dApps) that interact with the Ethereum blockchain from web environments.
+![The Role of Web3 Libraries](./images/L10image01.png)
 
-### 🔗 Purpose and Function
+### Purpose and Function
 
 - Act as a **bridge** between web applications and the Ethereum network.
 - Enable key operations:
@@ -18,7 +19,7 @@ Web3 libraries are essential tools for developers building decentralized applica
 - Abstract low-level communication (JSON-RPC) with Ethereum nodes.
 - Simplify blockchain interaction, especially for developers from traditional web backgrounds.
 
-### 📈 Importance
+### Importance
 
 - Lower technical barriers.
 - Accelerate innovation.
@@ -48,9 +49,9 @@ Ethereum developers typically choose between two JavaScript libraries: **Web3.js
 - Modular and lightweight; well-suited for multi-chain compatibility.
 - Increasingly popular among new Ethereum developers.
 
----
 
-## Web3.js vs. Ethers.js: A Feature Comparison
+
+### Web3.js vs. Ethers.js: A Feature Comparison
 
 | Feature                | Web3.js                                             | Ethers.js                                           |
 |------------------------|-----------------------------------------------------|-----------------------------------------------------|
@@ -72,13 +73,12 @@ Web3.js offers maturity and breadth, while Ethers.js provides better precision, 
 
 Successfully interacting with smart contracts requires an understanding of two foundational components: **Ethereum nodes** and the **ABI**.
 
----
 
-## Ethereum Nodes: The Network Backbone
+### Ethereum Nodes: The Network Backbone
 
 Ethereum is powered by a peer-to-peer (P2P) network of **nodes** running Ethereum clients.
 
-### 🎯 Node Responsibilities
+#### Node Responsibilities
 
 - Store a full or partial copy of the Ethereum blockchain.
 - Validate blocks and transactions based on protocol rules.
@@ -95,11 +95,11 @@ Web3 libraries connect to these nodes—either:
 
 ---
 
-## Application Binary Interface (ABI): The Contract's Language
+### Application Binary Interface (ABI): The Contract's Language
 
 The **Application Binary Interface (ABI)** is the structured way an application understands and communicates with a smart contract.
 
-### 🧬 ABI Overview
+#### ABI Overview
 
 - A **JSON-formatted** schema that defines:
   - Contract functions and their names
@@ -114,7 +114,7 @@ The **Application Binary Interface (ABI)** is the structured way an application 
   - Decode returned data
   - Enable event listening
 
-### 🔍 Key ABI Fields
+#### Key ABI Fields
 
 Each ABI entry includes:
 
@@ -124,15 +124,15 @@ Each ABI entry includes:
 - `stateMutability`: Whether the function alters state (e.g., `view`, `payable`)
 - `type`: Defines function, constructor, fallback, or event
 
-### 🌐 Why ABI Matters
+#### Why ABI Matters
 
 - Enables **standardized** and **interoperable** contract interaction.
 - Allows dApps and tools to communicate with any smart contract without knowing its source code.
 - Facilitates accurate and secure encoding/decoding of data.
 
----
 
-## Summary
+
+#### Summary
 
 Smart contract interaction on Ethereum relies on:
 
@@ -151,96 +151,63 @@ Together, these components form the foundation of Ethereum dApp development.
 
 ---
 
-## Simple Example
+#### Simple Example
 
-
+```solidity
 [ { "inputs": [], "name": "retrieve", "outputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "stateMutability": "view", "type": "function" }, 
 { "inputs": [ { "internalType": "uint256", "name": "num", "type": "uint256" } ], "name": "store", "outputs": [], "stateMutability": "nonpayable", "type": "function" } ]
-
+```
 ---
 
 # The Interaction Process: A High-Level Overview
 
 Interacting with an Ethereum smart contract from a web application involves a series of structured steps.
 
----
 
+![The Interaction Process](./images/L10image02.png)
 ## Connecting to an Ethereum Node (Providers)
 
-The initial step is establishing a connection to an Ethereum node.
+- The initial step is establishing a connection to an Ethereum node.
 
 - This connection is typically managed through a **provider**, which facilitates communication between your application and the blockchain.
 - Providers offer **read-only access** to data and states on the chain.
-- Common providers include public RPC endpoints from services like:
-  - **Infura**
-  - **Alchemy**
-  - **QuickNode**
-  - Or a local development blockchain like **Ganache**.
+- Common providers include public RPC endpoints from services like:**Infura** , **Alchemy** ,  **QuickNode** , Or a local development blockchain like **Ganache**.
+- A **web3 library** (e.g., Web3.js or Ethers.js) is instantiated with this provider to send requests to the Ethereum network.
 
-A **web3 library** (e.g., Web3.js or Ethers.js) is instantiated with this provider to send requests to the Ethereum network.
-
-This connection enables the application to:
-
-- Query network information
-- Send transactions
-- Interact with smart contracts
+- This connection enables the application to: **Query network information** , **Send transactions** , **Interact with smart contracts**
 
 ---
 
 ## Instantiating the Smart Contract
 
-After connecting to an Ethereum node, create a JavaScript representation of the smart contract in your application.
+- After connecting to an Ethereum node, create a JavaScript representation of the smart contract in your application.
 
-- This is done using the web3 library’s contract instantiation function:
-  - `web3.eth.Contract()` in Web3.js
-  - `new ethers.Contract()` in Ethers.js
+- This is done using the web3 library’s contract instantiation function:`web3.eth.Contract()` in Web3.js ,  `new ethers.Contract()` in Ethers.js
 
-This function typically requires two key pieces of information:
-
-1. **The contract's ABI** (Application Binary Interface):  
-   - The blueprint for interaction with the contract.
-2. **The contract's address**:  
-   - The unique identifier of the deployed contract on the blockchain.
-
-Once instantiated, this **contract object** serves as the primary interface for calling functions on the deployed smart contract.
+- This function typically requires two key pieces of information:
+    1. **The contract's ABI** (Application Binary Interface): The blueprint for interaction with the contract. 
+    2. **The contract's address**: The unique identifier of the deployed contract on the blockchain.
+- Once instantiated, this **contract object** serves as the primary interface for calling functions on the deployed smart contract.
 
 ---
 
 ## Calling Read Functions (No Transaction Required)
 
-Interacting with **read-only** functions is straightforward and does **not** involve submitting a transaction.
+- Interacting with **read-only** functions is straightforward and does **not** involve submitting a transaction.
 
 - These functions (often marked `view` or `pure` in Solidity) retrieve data or perform computations **without altering** the blockchain state.
-- To call a read function:
-  - Use the instantiated contract object's `methods` property
-  - Call the function by name
-  - Use the `.call()` method
-
-**Example use cases:**
-
-- Retrieve a token’s total supply
-- Fetch an account’s token balance
-
-These calls:
-
-- Do **not consume gas**
-- Are **free of charge**
-- Are ideal for displaying **real-time blockchain data**
+- To call a read function: Use the instantiated contract object's `methods` property Call the function by name Use the `.call()` method
+- Retrieve a token’s total supply,  Fetch an account’s token balance
+- These calls:  **do not consume gas**,  **free of charge**,  **ideal for displaying real-time blockchain data**
 
 ---
 
 ## Calling Write Functions (Transaction Required, Gas Fees)
 
-Invoking functions that **modify** the blockchain state (e.g., transferring tokens) requires:
-
-- Creating a **transaction**
-- Paying **gas fees**
-
-This is similar to sending ETH or deploying a new contract.
-
-### General process:
-
-1. **Build a Transaction Object**:
+- Invoking functions that **modify** the blockchain state (e.g., transferring tokens) requires: Creating a **transaction**,  Paying **gas fees**
+- This is similar to sending ETH or deploying a new contract.
+- General process:
+  1. **Build a Transaction Object**:
    - Includes:
      - `nonce`
      - `gasLimit`
@@ -248,12 +215,12 @@ This is similar to sending ETH or deploying a new contract.
      - `to` (contract's address)
      - `data` (encoded function call with arguments)
 
-2. **Sign the Transaction**:
+  2. **Sign the Transaction**:
    - Signed by the **sender’s private key**
    - This proves ownership and ensures the transaction’s integrity
    - Wallets like **MetaMask** typically handle this step
 
-3. **Broadcast the Transaction**:
+  3. **Broadcast the Transaction**:
    - The signed transaction is sent to the Ethereum network via the web3 library
    - Then propagated to validators/miners for inclusion in a block
 
@@ -261,7 +228,7 @@ This is similar to sending ETH or deploying a new contract.
 
 ## Digital Signatures and Transaction Broadcasting
 
-**Digital signatures** are the cryptographic foundation of Ethereum security.
+- **Digital signatures** are the cryptographic foundation of Ethereum security.
 
 ### Key Concepts:
 
@@ -294,7 +261,7 @@ This mechanism ensures:
 ---
 
 
-# Transaction Indexing: A Complete Guide
+# Transaction Indexing
 
 ## Introduction
 
@@ -363,10 +330,11 @@ However, the convenience of **centralized indexing services** often leads to the
   - Natural language queries
   - ZK-proven data for verifiability
 
----
+
+#### Dune
+  -Provides SQL querying and real time data.
 
 ## Dune
-
 ### Core Functionality
 
 **Dune** enables users to write SQL queries to extract specific data from the blockchain and transform it into visual dashboards.
@@ -415,7 +383,7 @@ While Dune empowers decentralized analysis through user-generated dashboards and
 - The infrastructure is managed centrally
 - Users rely on Dune’s backend for data availability and accuracy
 
-### Advantages
+## Advantages
 
 - High-speed queries
 - Fully managed infrastructure
@@ -423,7 +391,7 @@ While Dune empowers decentralized analysis through user-generated dashboards and
 - High uptime
 - Powerful visualization and query tools
 
-### Limitations
+## Limitations
 
 - Potential single points of failure
 - Censorship concerns
@@ -444,11 +412,6 @@ While Dune empowers decentralized analysis through user-generated dashboards and
   - **Delegators**
 - Uses **GRT** token for staking and economic incentives
 
-#### Resources
-
-- [The Graph Academy](https://thegraph.academy): Educational resource
-- [Graph Explorer](https://thegraph.com/explorer): Tool for exploring subgraph data
-
 ### SubQuery Network
 
 - Decentralized Web3 indexing protocol
@@ -458,7 +421,7 @@ While Dune empowers decentralized analysis through user-generated dashboards and
 
 ### TrueBlocks
 
-- "Local-first" indexing approach
+- **"Local-first"** indexing approach
 - Index can be fully cached locally
 - Benefits:
   - Enhanced privacy
@@ -466,7 +429,7 @@ While Dune empowers decentralized analysis through user-generated dashboards and
   - Multi-chain support
   - No rate limits or subscription costs
 
----
+
 
 ## Benefits of Decentralised Indexing
 
@@ -475,7 +438,7 @@ While Dune empowers decentralized analysis through user-generated dashboards and
 - Community-driven growth and innovation
 - Potentially lower costs over time
 
----
+
 
 ## Challenges of Decentralised Indexing
 
@@ -505,7 +468,7 @@ Some platforms are exploring **hybrid indexing models**, combining the strengths
 - **Example**: Infura’s **Decentralized Infrastructure Network (DIN)**
 - **Goal**: Provide high availability and performance while maintaining decentralization guarantees
 
----
+
 
 ## Final Thoughts
 
