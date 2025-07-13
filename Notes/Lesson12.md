@@ -1,7 +1,7 @@
 # Fractal Scaling in Ethereum
 
 Fractal scaling is an emerging approach to achieving massive scalability on Ethereum by recursively building layers on top of each other. This guide explores the key concepts, limitations, and use cases associated with Layer 3s (L3s), app chains, and modern rollup infrastructure.
-
+![fractal](./images/L12image01.jpeg)
 ---
 
 ## Core Concepts
@@ -115,21 +115,6 @@ Development of L3s and App Chains is rapidly advancing, thanks to **Rollup-as-a-
 
 ---
 
-## Conclusion
-
-Fractal scaling with L2s and L3s enables Ethereum to reach **massive scalability** while maintaining **security guarantees**. Whether building **custom apps**, **private rollups**, or **high-performance chains**, developers have an expanding ecosystem of frameworks and tools.
-
-Key Takeaways:
-
-- Layer 3s offer **tailored environments** for performance, privacy, and governance.
-- App Chains are often **implemented as Layer 3s**.
-- Data availability and economic viability still **anchor scaling** to Layer 1.
-- With frameworks like Arbitrum Orbit, OP Stack, Polygon CDK, and zkSync Hyperchains, developers have powerful options to scale Web3.
-
-
-
----
-
 
 # DeFi Arbitrage and Liquidation on EVM Chains
 
@@ -187,9 +172,9 @@ In DeFi, arbitrage typically involves **Decentralised Exchanges (DEXs)** such as
 
 ---
 
-## Smart Contract Logic for Arbitrage
+### Smart Contract Logic for Arbitrage
 
-### Step-by-Step Flow
+#### Step-by-Step Flow
 
 1. **Initialization**:
    - The arbitrage contract is called, usually by an externally owned account (EOA).
@@ -209,37 +194,7 @@ In DeFi, arbitrage typically involves **Decentralised Exchanges (DEXs)** such as
 
 Below is a **simplified example** of a Solidity contract that performs a Uniswap V2 flash swap for arbitrage purposes:
 
-```
-function uniswapV2Call(
-    address sender,
-    uint amount0,
-    uint amount1,
-    bytes calldata data
-) external override {
-    // Decode token addresses and swap details
-    (address tokenBorrow, uint amountBorrow, address tokenPay, address[] memory path) = abi.decode(data, (address, uint, address, address[]));
-
-    // Use borrowed token to swap on another DEX (e.g., SushiSwap)
-    uint amountReceived = performSwap(tokenBorrow, amountBorrow, path);
-
-    // Calculate required repayment amount (including fee)
-    uint amountToRepay = calculateRepayment(amountBorrow);
-
-    require(amountReceived > amountToRepay, "No profit");
-
-    // Repay the flash swap
-    IERC20(tokenBorrow).transfer(msg.sender, amountToRepay);
-
-    // Transfer profit to sender
-    IERC20(tokenBorrow).transfer(tx.origin, amountReceived - amountToRepay);
-}
-```
-
-
-
----
-
-
+```solidity
 import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Callee.sol";
 import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
 import "./interfaces/ISushiSwapRouter.sol"; // Assuming a similar interface for another DEX
@@ -305,38 +260,9 @@ contract Arbitrageur is IUniswapV2Callee {
         );
     }
 }
-
-
-
+```
 
 ---
-
-
-
-
-
-### Notes:
-- The `uniswapV2Call` function is the **callback** triggered by Uniswap V2 during a flash swap.
-- Profit is the remaining token amount after covering the repayment.
-- External validation (e.g., slippage control) and **gas optimizations** are typically applied in production code.
-
----
-
-## Final Thoughts
-
-- Arbitrage in DeFi is **capital-efficient** and **permissionless**, made possible by the composability of EVM-based chains.
-- Tools like **flash loans** and **atomic transactions** enable complex financial strategies in a single block.
-- High competition and **MEV risks** require efficient implementation, real-time monitoring, and fast execution.
-
---- 
-
-Stay cautious — arbitrage opportunities are fleeting, and **network congestion, slippage, or gas fees** can eliminate profitability or cause losses.
-
-
-
-
----
-
 
 # Liquidation in DeFi Lending Protocols
 
@@ -344,7 +270,7 @@ Liquidation is a critical process in decentralised finance (DeFi) lending platfo
 
 ---
 
-## What Is Liquidation?
+**What Is Liquidation?**
 
 **Definition**: Liquidation is the act of selling off a borrower's collateral to repay their debt when their position becomes unsafe (i.e., the value of their collateral drops too close to or below the value of their borrowed assets).
 
@@ -357,9 +283,14 @@ This mechanism is vital for protecting lending protocols such as **Aave** and **
 The **Health Factor** is a numeric value used to represent how safe a user's loan position is.
 
 - **Formula**:
-  ```
-  Health Factor = (Collateral Value × Liquidation Threshold) / Borrowed Value
-  ```
+$$
+\frac{
+\sum (\text{CollateralValue} \times \text{LiquidationThreshold})
+}{
+\sum \text{BorrowedValue}
+}
+$$
+
 
 - **Interpretation**:
   - If **Health Factor > 1** → The position is healthy.
@@ -377,7 +308,7 @@ Each asset has a **Liquidation Threshold** — a percentage that determines how 
 
 ---
 
-## Role of Liquidators
+## Liquidators
 
 - **Liquidators** are users (often bots) who monitor the blockchain for under-collateralised positions.
 - They initiate the liquidation process and are **incentivised** through a **liquidation bonus**.
@@ -423,35 +354,7 @@ Lending protocols expose public functions to allow **permissionless** liquidatio
 
 Below is a **conceptual example** of how a Solidity smart contract might interact with an Aave-like lending protocol to perform a liquidation:
 
-```
-function performLiquidation(
-    address user,
-    address collateralAsset,
-    address debtAsset,
-    uint256 debtToCover
-) external {
-    // Approve debt repayment
-    IERC20(debtAsset).approve(address(lendingPool), debtToCover);
-
-    // Call liquidation function on lending protocol
-    lendingPool.liquidationCall(
-        collateralAsset,
-        debtAsset,
-        user,
-        debtToCover,
-        false // receiveAToken: false to receive underlying asset
-    );
-
-    // The collateral (with bonus) is now in this contract
-    // Logic to transfer profit to msg.sender or treasury
-}
-```
-
-> Note: In production, additional logic for slippage, flash loans, or safety checks is typically required.
-
----
-
-
+```solidity
 
 import "./interfaces/ILendingPool.sol"; // Simplified Aave interface
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -500,26 +403,5 @@ contract Liquidator {
     }
 }
 
-
-
----
-
-
-
-
-
-
-
-## Summary
-
-- Liquidation protects DeFi lending protocols from under-collateralised debt.
-- It is a **decentralised, permissionless** process.
-- Liquidators are rewarded via a **bonus** in collateral.
-- Smart contracts automate the liquidation flow, ensuring transparency and reliability.
-
---- 
-
-**Caution**: Participating in liquidation requires careful monitoring, gas optimization, and accurate on-chain data to avoid losses.
-
-
+```
 
