@@ -150,7 +150,7 @@ touch index.ts
 ## 4. Configure the .env File
 Edit the .env file and insert your credentials:
 
-```
+```bash
 QUICKNODE_ENDPOINT="YOUR_RPC_ENDPOINT_URL"
 PRIVATE_KEY="YOUR_WALLET_PRIVATE_KEY"
 ```
@@ -159,7 +159,7 @@ PRIVATE_KEY="YOUR_WALLET_PRIVATE_KEY"
 - PRIVATE_KEY: A test wallet's private key (used only for signing and sending state-changing transactions)
 
 
-Summary
+### Summary
 This minimal but complete setup gives you:
 
 A type-safe development environment using TypeScript
@@ -244,20 +244,6 @@ Examples of **Public Actions**:
 
 Use the `createPublicClient` function:
 
-```ts
-import { createPublicClient, http } from 'viem';
-
-const client = createPublicClient({
-  chain: mainnet,
-  transport: http(),
-});
-```
-
-
-
----
-
-
 ```javascript
 import { createPublicClient, http } from 'viem';
 import { mainnet } from 'viem/chains';
@@ -321,23 +307,7 @@ const walletClient = createWalletClient({
 });
 ```
 
-#### Important: Never expose your private key in client-side (browser) code. Use environment variables and secure key management for backend or server-side interactions.
-
-```javascript
-import { createWalletClient, http } from 'viem';
-import { mainnet } from 'viem/chains';
-import { privateKeyToAccount } from 'viem/accounts';
-
-// Create an account from a private key.
-const account = privateKeyToAccount('0x...');
-
-// Create a Wallet Client and "hoist" the account into it.
-const walletClient = createWalletClient({
-  account,
-  chain: mainnet,
-  transport: http(),
-});
-```
+##### Important: Never expose your private key in client-side (browser) code. Use environment variables and secure key management for backend or server-side interactions.
 
 # Test Client and Accounts in Viem
 
@@ -397,17 +367,6 @@ These are externally managed accounts—typically within browser wallets like **
 
 ### Creating a WalletClient for a JSON-RPC Account
 
-```ts
-import { createWalletClient, custom } from 'viem';
-import { mainnet } from 'viem/chains';
-
-// Connect to MetaMask or another injected wallet
-const walletClient = createWalletClient({
-  chain: mainnet,
-  transport: custom(window.ethereum),
-});
-```
-
 This setup is used for dApps interacting with a user's wallet in the browser.
 
 ```javascript
@@ -428,9 +387,7 @@ const [address] = await walletClient.requestAddresses();
 
 ---
 
-# Local Accounts in Viem
-
-## Overview
+## 2. Local Accounts in Vie
 
 **Local Accounts** are Ethereum accounts where the private key is managed directly by the application's environment, not by an external wallet or injected provider.
 
@@ -442,7 +399,7 @@ This approach is commonly used in:
 
 In Viem, local accounts are created using utilities provided by the `viem/accounts` module.
 
----
+
 
 ## Use Cases for Local Accounts
 
@@ -494,7 +451,7 @@ const walletClient = createWalletClient({
 });
 ```
 
-
+#### Example
 
 ```javascript
 import { createWalletClient, http } from 'viem';
@@ -514,7 +471,7 @@ const walletClient = createWalletClient({
 // This client can now sign and send transactions on behalf of the provided account
 ```
 
-✅ This walletClient can now sign and send transactions directly on behalf of the account.
+ This walletClient can now sign and send transactions directly on behalf of the account.
 
 #### Benefits of Local Accounts
 Full Control: No reliance on external wallets.
@@ -529,15 +486,6 @@ Always treat private keys with extreme care.
 Never hardcode private keys into your source code or commit them to Git.
 
 Use environment variables and secret management tools like .env, Vault, or cloud secret managers.
-
-#### Summary
-Local accounts are essential for programmatic blockchain interaction.
-
-Use privateKeyToAccount to convert a private key into a Viem-compatible account.
-
-Combine the local account with createWalletClient() to sign and broadcast transactions.
-
-Ideal for secure, backend-based dApps and testing workflows.
 
 ---
 
@@ -589,33 +537,52 @@ console.log(`Token name: ${tokenName}`); // Output: Token name: Dai Stablecoin
 ```
 
 
-## Achieving Full Type Safety with as const
-Viem leverages TypeScript to provide compile-time type inference from a contract’s ABI.
+## Achieving Full Type Safety with `as const`
 
-For this to work, the ABI should be declared with a const assertion (as const), for example:
+The true power of Viem's developer experience is unlocked when its type inference system is fully utilised.
 
-```ts
+Viem can parse a contract's ABI at the TypeScript level and provide strong, specific types for function names, arguments, and return values.
 
+For this to work, the ABI object must be declared with a TypeScript const assertion (`as const`) or be defined inline within the `readContract` call.
+
+This simple addition transforms the ABI from a passive data structure into an active, compile-time development tool. Consider the following ABI definition for a simple Storage contract:
+
+```typescript
 // storageAbi.ts
 export const storageAbi = [
   {
     "inputs": [],
     "name": "retrieve",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint256", "name": "x", "type": "uint256" }],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "num",
+        "type": "uint256"
+      }
+    ],
     "name": "store",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   }
-] as const;
+] as const; // The critical 'as const' assertion
 ```
 
-With as const, your editor will now auto-complete and validate functionName, inputs, and return types.
+With as const, when a developer uses this ABI with readContract, their code editor will now provide autocompletion for functionName (suggesting only 'retrieve' or 'store'), and it will know the exact arguments each function expects and the return types.
+
+
+
 
 ## Passing Arguments and Handling Return Values
 For functions with arguments, use the args field (an array). Type safety will enforce correct arguments when ABI is properly typed.
@@ -843,7 +810,7 @@ If successful, `simulateContract` returns:
 
 ---
 
-## Example: Simulating a Write Call
+### Example: Simulating a Write Call
 
 ```ts
 import { publicClient } from './client';
@@ -896,7 +863,6 @@ These errors provide detailed information, including revert reasons, making it e
 Simulation is not just a best practice — it’s a safer, more predictable way to build production-grade dApps with Viem.
 
 ---
-
 
 
 ## Step 2: `writeContract`
@@ -1021,7 +987,7 @@ This callback handles edge cases where:
 It provides details about the replacement transaction, helping your app react appropriately.
 
 
-## Final Notes
+##  Notes
 -  This step completes the transaction lifecycle: simulate → write → wait.
 -  Use the receipt to trigger UI updates, backend events, analytics, or notifications.
 - Always inspect receipt.status to confirm success before assuming the transaction was effective.
@@ -1138,45 +1104,6 @@ This explicit resource management reflects Viem’s architectural philosophy of 
 
 ---
 
-### Example: Listening for a Transfer Event
-
-```typescript
-import { createPublicClient, http } from 'viem';
-import { mainnet } from 'viem/chains';
-import { erc20Abi } from './abi';
-
-const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http(),
-});
-
-const unwatch = publicClient.watchContractEvent({
-  address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', // DAI token address
-  abi: erc20Abi,
-  eventName: 'Transfer',
-  args: {
-    from: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045', // vitalik.eth
-  },
-  onLogs: (logs) => {
-    console.log('New Transfer event:', logs);
-  },
-});
-
-// Later, when you want to stop listening:
-unwatch();
-
-```
-#### In this example:
-
-- We listen for Transfer events emitted by the DAI contract.
-
-- We filter for events where the from address is Vitalik's account.
-
-- When such events occur, the onLogs callback is triggered.
-
-- unwatch() is stored so that we can stop listening when necessary.
-
-By using watchContractEvent, developers can create responsive, event-driven dApps that react to blockchain activity in real-time, while maintaining full control over resource usage.
 ### Example
 
 The following example demonstrates how to watch for Transfer events from an ERC-20 token contract:
@@ -1241,44 +1168,6 @@ After creating a filter, pass it to the `getFilterLogs` action.
 
 This action queries the node and returns an **array of all matching log entries**, each representing an emitted event that satisfies the filter’s criteria.
 
----
-
-### Example: Querying Past `Transfer` Events
-
-```typescript
-import { createPublicClient, http } from 'viem';
-import { mainnet } from 'viem/chains';
-import { erc20Abi } from './abi';
-
-const publicClient = createPublicClient({
-  chain: mainnet,
-  transport: http(),
-});
-
-const filter = await publicClient.createContractEventFilter({
-  address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', // DAI token
-  abi: erc20Abi,
-  eventName: 'Transfer',
-  args: {
-    from: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
-  },
-  fromBlock: 19000000n,
-  toBlock: 'latest',
-});
-
-const logs = await publicClient.getFilterLogs({ filter });
-
-console.log('Historical logs:', logs);
-```
-
-#### Key Advantages
-- Efficiency: Only relevant logs are fetched based on precise filters.
-
-- Scalability: The block range parameters (fromBlock, toBlock) allow querying small or large periods of time as needed.
-
-- Indexed Arguments: Filters can be further narrowed using indexed parameters, reducing the volume of returned data and improving performance.
-
-By using createContractEventFilter and getFilterLogs, developers can build features such as transaction history views, analytics dashboards, and audit trails that rely on past blockchain activity — all while maintaining performance and control.
 
 ### This example demonstrates how to fetch all Transfer events to a specific address within the last 100 blocks:
 ```javascript
