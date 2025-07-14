@@ -293,85 +293,66 @@ To create a Contract instance, you need three essential pieces of information:
 
 For Solidity developers, the primary purpose of a client-side library is to call the functions of a deployed smart contract.
 
----
+
 
 ## Instantiating a Contract Instance
 
 The standard method for creating a contract instance is the `ethers.Contract` constructor. The capabilities of the instance are dictated by the **runner** (the third argument) provided at instantiation.
 
----
 
 ## Read-Only Instance
 
 - By passing a **Provider**, you create an instance that can only call **view** and **pure** functions.
 - This is the safest default for displaying data.
 
----
 
-## Read-Write Instance
+## Read-Write Contract Instances
 
-- By passing a **Signer**, you create an instance that can both read data and send transactions to **state-changing** functions.
+### Introduction
+
+When interacting with smart contracts using Ethers.js, you can create two types of contract instances:
+
+- **Read-Only Instance**: Allows calling `view` or `pure` functions that do not change blockchain state.
+- **Read-Write Instance**: Allows calling functions that modify state (e.g., `transfer()`), requiring a `Signer`.
 
 
----
+### Read-Write Instance
 
-import { ethers } from "ethers";
-// Assume `provider`, `signer`, `contractAddress`, and `contractAbi` are already defined.
+A read-write contract instance is created using a `Signer`. This is required for sending transactions that change contract state.
 
-// 1. Create a Read-Only Instance (connected to a Provider)
-// This instance can only call view/pure functions like `name()` or `balanceOf()`.
-const readOnlyContract = new ethers.Contract(contractAddress, contractAbi, provider);
-
-// 2. Create a Read-Write Instance (connected to a Signer)
-// This instance can call all functions, including state-changing ones like `transfer()`.
+```js
+// Assume `signer` is already obtained from the provider.
 const writeableContract = new ethers.Contract(contractAddress, contractAbi, signer);
 
-
-
----
-
-
-# Recommended Pattern: Using `.connect()` to Manage Contract Instances
-
-A highly recommended pattern is to begin with a **read-only** contract instance for all data-fetching purposes and only create a **writeable** instance when a user action requires it.
+// Example: Sending a state-changing transaction
+await writeableContract.transfer("0xRecipientAddress", ethers.parseUnits("10.0", 18));
+```
 
 ---
 
-## Using the `.connect()` Method
+### Best Practice: Use `.connect()` to Create a Temporary Writable Instance
 
-- The `.connect()` method is an **immutable operation**.
-- It returns a **new contract object** connected to the new runner (e.g., a Signer).
-- The **original contract instance remains unchanged**.
+It is recommended to begin with a **read-only** instance for all initial data-fetching, and create a **writeable** instance only when needed.
 
----
+Use the `.connect()` method to attach a signer without modifying the original contract instance. This helps avoid side effects and ensures predictability.
 
-## Benefits of This Approach
-
-- Prevents **side effects** by keeping contract instances immutable.
-- Leads to more **predictable code**.
-- Ensures the capabilities of any given contract instance are **fixed** and clear.
-
-
----
-
-
-// Best practice: Start with a read-only instance for fetching initial data.
+```js
+// Start with a read-only instance
 const contract = new ethers.Contract(contractAddress, contractAbi, provider);
 
-// Later, when a user clicks a button to send a transaction...
+// Later, when a user triggers a transaction (e.g., button click)
 const signer = await provider.getSigner();
-// Create a new, temporary instance connected to the signer.
+
+// Create a new instance connected to the signer
 const contractWithSigner = contract.connect(signer);
 
-// Now, `contractWithSigner` can be used to send the transaction, while the original
-// `contract` object remains a safe, read-only instance.
+// Use the signer-connected instance to send the transaction
 await contractWithSigner.someStateChangingFunction();
-
+```
 
 ---
 
-
-# Executing Read-Only Functions (Constant Calls)
+## Executing Read-Only Functions (Constant Calls)
 
 Functions marked as `view` or `pure` in your Solidity contract are exposed as asynchronous methods on the Ethers.js contract instance. Invoking them does **not** cost gas and simply queries the connected node for data.
 
@@ -384,15 +365,14 @@ Functions marked as `view` or `pure` in your Solidity contract are exposed as as
 
 ---
 
-## Data Type Conversion Examples
+### Data Type Conversion Examples
 
 - Solidity `uint256` is returned as a native JavaScript **BigInt**.
 - Solidity `string` is returned as a JavaScript **string**.
 - Solidity `address` is returned as a **checksummed address string**.
 
 
----
-
+```javascript
 
 // Assuming an ERC-20 contract instance (`readOnlyContract`).
 
@@ -407,7 +387,7 @@ const totalSupply = await readOnlyContract.totalSupply();
 // Solidity: function balanceOf(address account) public view returns (uint256);
 const balance = await readOnlyContract.balanceOf("0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B");
 // `balance` resolves to a BigInt.
-
+```
 
 ---
 
@@ -433,8 +413,7 @@ A powerful and often underutilized feature is the ability to **simulate a state-
 - Accounts for **all `require` statements** and contract logic inside the transaction.
 - Can dramatically **improve user experience** by providing immediate, accurate feedback on whether a transaction would succeed or fail.
 
----
-
+```javascript
 
 // Solidity: function transfer(address to, uint256 amount) public returns (bool);
 try {
@@ -446,7 +425,7 @@ try {
     console.error("Validation failed: The transfer would likely fail.", error);
 }
 
-
+```
 
 ---
 
@@ -484,10 +463,7 @@ To execute a function that modifies the blockchain state, the contract instance 
 - The UI should reflect a **"pending"** state after step one.
 - The UI should only update to a **"confirmed"** state after step two completes.
 
-
-
----
-
+```javascript
 
 import { ethers } from "ethers";
 // Assume `contractWithSigner` is a contract instance connected to a Signer.
@@ -517,7 +493,7 @@ try {
     console.error("Transaction submission failed:", error);
 }
 
-
+```
 ---
 
 
@@ -541,25 +517,10 @@ Ethers.js provides fine-grained control over transaction parameters by allowing 
 
 ---
 
-## Example Usage
-
-```javascript
-// Sending 0.1 Ether with a custom gas limit and EIP-1559 fees
-await contract.somePayableFunction(arg1, arg2, {
-  value: ethers.parseEther("0.1"),
-  gasLimit: 500000,
-  maxFeePerGas: ethers.parseUnits("100", "gwei"),
-  maxPriorityFeePerGas: ethers.parseUnits("2", "gwei")
-});
-
-```
-
----
-
 
 ## Example: Sending ETH to a payable function
 
-
+```javascript
 // Solidity: function deposit() public payable {... }
 
 // To send 0.1 ETH with the call, first parse it to wei.
@@ -567,18 +528,20 @@ const oneTenthEthInWei = ethers.parseEther("0.1");
 
 const tx = await contractWithSigner.deposit({ value: oneTenthEthInWei });
 await tx.wait();
-
+```
 ---
 
 
 ## Example: Specifying a custom gas limit
+
+```javascript
 // Manually setting a gas limit is generally not recommended as Ethers' estimation
 // is usually sufficient, but it can be necessary for complex transactions.
 const tx = await contractWithSigner.someComplexFunction(arg1, arg2, {
     gasLimit: 3_000_000n // Using BigInt literal for clarity
 });
 await tx.wait();
-
+```
 ---
 
 # Deploying Contracts with ContractFactory
@@ -626,42 +589,6 @@ console.log(`Contract deployed at address: ${contract.target}`);
 
 ```
 
----
-
-import { ethers } from "ethers";
-// Assuming `abi` and `bytecode` are imported from a compiled contract JSON file.
-// Assuming `signer` is an initialised Signer instance.
-
-// 1. Create the factory instance.
-const factory = new ethers.ContractFactory(abi, bytecode, signer);
-
-// Solidity: constructor(string memory _initialMessage) {... }
-const initialMessage = "Hello, Ethers v6!";
-
-try {
-    console.log(`Deploying contract with message: "${initialMessage}"`);
-
-    // 2. Send the deployment transaction.
-    const contract = await factory.deploy(initialMessage);
-
-    // The contract object has a helper to access the deployment transaction.
-    console.log("Deployment transaction hash:", contract.deploymentTransaction().hash);
-
-    // 3. Wait for the deployment to be confirmed on-chain.
-    await contract.waitForDeployment();
-
-    // The contract address is now available.
-    const deployedAddress = await contract.getAddress();
-    console.log("Contract deployed to address:", deployedAddress);
-
-} catch (error) {
-    console.error("Deployment failed:", error);
-}
-
-
----
-
-
 This process provides a seamless experience, giving you a usable Contract object immediately, with methods like getAddress() and waitForDeployment() designed to resolve gracefully once the blockchain state is updated.
 
 ---
@@ -675,6 +602,7 @@ For Solidity developers, the `emit` keyword is a cornerstone of contract design,
 ## Listening for Real-Time Events
 
 To subscribe to events as they are emitted by a contract, the primary method is:
+
 
 ```javascript
 contract.on(eventName, listenerCallback)
@@ -706,7 +634,6 @@ This final object contains comprehensive metadata about the event and is the mos
   A convenience method to unsubscribe this specific listener.
 
 
----
 
 // Solidity: event Transfer(address indexed from, address indexed to, uint256 value);
 
@@ -734,7 +661,6 @@ To listen for **all events** emitted by a contract, you can use the wildcard str
 - In this case, the callback receives **only a single argument**: the **event object**.
 - This is necessary because the number and type of arguments differ for each event.
 
----
 
 ## Example
 
@@ -761,8 +687,6 @@ It is important to note that the reliability of real-time event listening can be
 
 To retrieve logs for events that have already occurred, the `contract.queryFilter()` method is the standard and most robust solution in Ethers.js v6. It allows you to efficiently query a range of blocks for specific events.
 
----
-
 ## Core Method
 
 ```javascript
@@ -776,8 +700,6 @@ contract.queryFilter(eventFilter, fromBlock, toBlock)
 # Arguments for `contract.queryFilter()`
 
 The `contract.queryFilter()` method in Ethers.js v6 accepts the following arguments:
-
----
 
 ## 1. `eventFilter`
 
@@ -793,30 +715,26 @@ const filter = contract.filters.Transfer(senderAddress, null);
 ```
 
 ## 2. fromBlock (optional)
-The starting block number for the query.
+The starting block number for the query. Can be:
 
-Can be:
+- A specific block number (e.g., 12345678)
 
-A specific block number (e.g., 12345678)
+- A tag such as 'earliest'
 
-A tag such as 'earliest'
-
-Defaults to: 0 (the genesis block)
+- Defaults to: 0 (the genesis block)
 
 ## 3. toBlock (optional)
-The ending block number for the query.
+The ending block number for the query. Can be:
 
-Can be:
+- A specific block number
 
-A specific block number
+- A tag such as 'latest'
 
-A tag such as 'latest'
-
-Defaults to: 'latest' (the most recent block)
+- Defaults to: 'latest' (the most recent block)
 
 
 ----
-
+```javascript
 
 // Example: Get all `Transfer` events from the last 1000 blocks.
 const currentBlock = await provider.getBlockNumber();
@@ -837,6 +755,7 @@ pastEvents.forEach(event => {
     );
 });
 
+```
 
 ---
 
@@ -845,7 +764,6 @@ pastEvents.forEach(event => {
 
 While Ethers.js also provides a lower-level `provider.getLogs()` method, it is **crucial to prefer** `contract.queryFilter()` for most use cases.
 
----
 
 ## Why Prefer `contract.queryFilter()`?
 
@@ -853,7 +771,6 @@ While Ethers.js also provides a lower-level `provider.getLogs()` method, it is *
   - **Safer**: It avoids unintended matches from unrelated contracts.
   - **More intuitive**: It uses the contract's ABI and event definitions directly.
 
----
 
 ## Limitations of `provider.getLogs()`
 
@@ -864,7 +781,6 @@ While Ethers.js also provides a lower-level `provider.getLogs()` method, it is *
   - **Performance issues**
   - **Subtle bugs** when filtering logs manually
 
----
 
 ## Best Practice
 
@@ -878,7 +794,6 @@ Always use `contract.queryFilter()` unless you have a specific, advanced need fo
 
 The efficiency of querying logs hinges on the use of the `indexed` keyword in your Solidity event declarations.
 
----
 
 ## Indexed vs. Non-Indexed Parameters
 
@@ -918,7 +833,6 @@ contract.filters.EventName(arg1, arg2,...)
 
 When creating event filters in Ethers.js using `contract.filters`, you can apply different filtering strategies based on how you pass values for **indexed** arguments.
 
----
 
 ## 1. Exact Match
 
@@ -949,6 +863,7 @@ contract.filters.Transfer(["0xAddr1", "0xAddr2"], null);
 This filter will match events where the from address is either "0xAddr1" or "0xAddr2".
 
 ---
+```javascript
 
 // Solidity: event Transfer(address indexed from, address indexed to, uint256 value);
 const myAddress = "0x...";
@@ -967,7 +882,7 @@ const receivedEvents = await contract.queryFilter(receivedFilter, -10000);
 // 3. Filter for transfers from either Alice OR Bob.
 const fromAliceOrBobFilter = contract.filters.Transfer([aliceAddress, bobAddress]);
 const complexEvents = await contract.queryFilter(fromAliceOrBobFilter, -10000);
-
+```
 
 ---
 
@@ -975,7 +890,6 @@ const complexEvents = await contract.queryFilter(fromAliceOrBobFilter, -10000);
 
 A significant **breaking change** was introduced in **Ethers.js v6** regarding how events are accessed from a transaction receipt.
 
----
 
 ## Change from v5 to v6
 
@@ -985,7 +899,6 @@ A significant **breaking change** was introduced in **Ethers.js v6** regarding h
 - **Ethers.js v6**:  
   This array has been **removed**. Instead, the `TransactionReceipt` object now contains a **raw `logs` array**.
 
----
 
 ## How to Parse Logs in v6
 
@@ -1015,40 +928,11 @@ for (const log of receipt.logs) {
 ## Why This Approach?
 It is more verbose, but also more:
 
-Explicit: You control exactly how logs are parsed.
+- Explicit: You control exactly how logs are parsed.
 
-Robust: You can safely ignore logs not related to your contract.
+- Robust: You can safely ignore logs not related to your contract.
 
-Accurate: Prevents false positives from unrelated contract events (e.g., ERC-20 token transfers triggered within your contract's function).
-
----
-
-// v6 Pattern: Parsing logs from a transaction receipt.
-const txResponse = await contractWithSigner.someFunctionThatEmitsEvents();
-const txReceipt = await txResponse.wait();
-
-const parsedLogs =;
-for (const log of txReceipt.logs) {
-    try {
-        // Attempt to parse the log with the contract's interface.
-        const parsedLog = contract.interface.parseLog(log);
-        if (parsedLog) {
-            // If parsing is successful, it's an event from our contract.
-            console.log(
-                `Parsed Event: ${parsedLog.name} with args:`,
-                parsedLog.args
-            );
-            parsedLogs.push(parsedLog);
-        }
-    } catch (error) {
-        // This log was not from our contract's ABI, so parseLog throws an error.
-        // We can safely ignore it.
-    }
-}
-
----
-
-This change requires developers migrating from v5 to refactor their test suites and application logic, moving away from the receipt.events shortcut to this more deliberate parsing loop.
+- Accurate: Prevents false positives from unrelated contract events (e.g., ERC-20 token transfers triggered within your contract's function).
 
 
 ---
@@ -1111,7 +995,7 @@ You must ensure type consistency when performing arithmetic.
 
 ---
 
-## Summary
+### Summary
 Use BigInt for all Solidity-style integers (uint256, int128, etc.).
 
 Prefer utility functions from the root ethers object.
@@ -1119,13 +1003,13 @@ Prefer utility functions from the root ethers object.
 Avoid mixing BigInt and Number types.
 
 ## Creating BigInts
-```
+```javascript
 *   From a string: `const val = BigInt("1000000000000000000");`
 *   Using the literal `n` suffix: `const val = 1000000000000000000n;`.
 ```
 
 ## BigInt Operations
-```
+```javascript
 const price = 1500n;
 const quantity = 3n;
 
