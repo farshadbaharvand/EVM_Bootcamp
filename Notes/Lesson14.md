@@ -1193,8 +1193,7 @@ ethers.solidityPackedKeccak256(types, values)
 ```
 
 ## Arguments
-types:
-An array of strings representing Solidity types, such as "address", "uint256", "bytes32", etc.
+### types: An array of strings representing Solidity types, such as "address", "uint256", "bytes32", etc.
 
 ### values: An array of JavaScript values corresponding to the types array.
 
@@ -1203,17 +1202,16 @@ Achieving a perfect hash match between JavaScript and Solidity requires careful 
 
 ### Type Alignment: Ensure JavaScript values match Solidity types exactly. For example:
 
-Use bigint for uint256
+- Use bigint for uint256
 
-Use checksummed addresses for address
+- Use checksummed addresses for address
 
 ### Encoding: Strings and bytes must be encoded exactly as Solidity expects.
 
 Discrepancies will result in:
+- A different hash value
 
-A different hash value
-
-Failed on-chain verification or signature checks
+- Failed on-chain verification or signature checks
 
 ### Example
 ```javascript
@@ -1231,7 +1229,7 @@ keccak256(abi.encodePacked(userAddress, uint256(1234)));
 By using ethers.solidityPackedKeccak256 correctly, developers can confidently verify data off-chain and on-chain with matching hashes.
 
 ---
-
+```javascript
 // On-chain Solidity code for signature verification:
 // function verify(bytes32 _hash, bytes calldata _signature) public pure returns (address) {
 //     return ECDSA.recover(_hash, _signature);
@@ -1251,6 +1249,16 @@ const messageHash = ethers.solidityPackedKeccak256(
 );
 // `messageHash` will be '0x...' and can now be signed by the user's wallet.
 // const signature = await signer.signMessage(ethers.getBytes(messageHash));
+```
+
+
+
+
+
+
+
+
+
 
 ---
 
