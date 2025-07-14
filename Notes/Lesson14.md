@@ -1251,181 +1251,159 @@ const messageHash = ethers.solidityPackedKeccak256(
 // const signature = await signer.signMessage(ethers.getBytes(messageHash));
 ```
 
+# Data and Hex String Manipulation
 
+For more complex cryptographic operations, such as constructing data for Merkle trees or custom signature schemes, Ethers.js provides a set of low-level data manipulation utilities. The v6 release renamed several of these for clarity.
 
+## ethers.getBytes(hexString)
 
-
-
-
-
-
-
----
-
-# Off-Chain Hashing and Signature Generation for On-Chain Verification
-
-In many decentralized applications, it's necessary to sign data off-chain and verify the signature on-chain. This ensures authenticity without sending sensitive data to the blockchain. This guide demonstrates how to correctly match off-chain hashing using Ethers.js with on-chain verification using Solidity and the `ECDSA` library.
-
----
-
-## ✅ On-Chain Solidity Code for Signature Verification
-
-```solidity
-function verify(bytes32 _hash, bytes calldata _signature) public pure returns (address) {
-    return ECDSA.recover(_hash, _signature);
-}
-```
-
-This function uses the OpenZeppelin ECDSA library to recover the signer's address from the signed message hash and signature.
-
----
-Example of Hash Creation in Solidity
-```solidity
-bytes32 messageHash = keccak256(abi.encodePacked(msg.sender, a_uint256_nonce));
-
-```
-- msg.sender is the address of the user.
-
-- a_uint256_nonce is a unique nonce used to prevent replay attacks.
-
-
-## Matching Hash in Ethers.js v6
-To produce the same messageHash off-chain in JavaScript using Ethers.js v6:
-```javascript
-
-import { ethers } from "ethers";
-
-const signerAddress = "0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B";
-const nonce = 12345n; // Use BigInt to match Solidity's uint256
-
-const messageHash = ethers.solidityPackedKeccak256(
-    ["address", "uint256"],
-    [signerAddress, nonce]
-);
-
-```
-This will return a 0x... hex string that matches the keccak256(abi.encodePacked(...)) result in Solidity.
-
-## Signing the Hash
-After computing the messageHash, sign it with the user's wallet:
+- **Description** : Converts a hex string (e.g., `"0x1234"`) into a `Uint8Array`.
+- **Replacement** : This replaces the `arrayify` function from v5.
 
 ```javascript
-const signature = await signer.signMessage(ethers.getBytes(messageHash));
+
+import { getBytes } from "ethers";
+
+// Example
+const byteArray = getBytes("0x1234");
+console.log(byteArray); // Uint8Array(2) [18, 52]
+
+```
+## ethers.hexlify(bytes)
+- **Description** : Converts a Uint8Array or an array of numbers back into a data hex string.
+
+```javascript
+import { hexlify } from "ethers";
+
+// Example
+const hexString = hexlify([18, 52]);
+console.log(hexString); // "0x1234"
 ```
 
-- ethers.getBytes() converts the hash string into a Uint8Array suitable for signing.
-- signer must be a valid Ethers.js Signer instance, e.g., from provider.getSigner().
+## ethers.concat(arrayOfBytesLike)
+- **Description** : Joins an array of byte-like objects (hex strings or Uint8Arrays) into a single hex string.
 
-### Full Flow Summary
-####  Off-Chain: 
-- Compute messageHash using ethers.solidityPackedKeccak256().
-- Sign the hash using signer.signMessage().
+```javascript
+import { concat, getBytes } from "ethers";
 
-#### On-Chain:
-Verify the signature using ECDSA.recover() with the original messageHash.
-
-## Important Notes
-Always ensure data types and order match exactly between Solidity and Ethers.js.
-
-Use BigInt for uint256.
-
-Addresses must be checksummed and passed as lowercase string literals.
-
-Strings must be correctly encoded — prefer bytes32 or bytes where possible to avoid ambiguity.
-
-This precise alignment ensures that signature verification works seamlessly between off-chain code and on-chain smart contracts.
+// Example
+const combined = concat([
+  getBytes("0x1234"),
+  getBytes("0xabcd")
+]);
+console.log(combined); // Uint8Array(4) [18, 52, 171, 205]
 
 
----
+```
+## ethers.zeroPadValue(hexString, length)
+- **Description** : Left-pads a hex string with zeros to a specific byte length.
 
-# Key Updates and Recent Features (Ethers.js v6+)
+- **Use Case** : Useful when formatting values like uint128 into a bytes32 slot.
 
-The release of **Ethers.js v6** marks a major milestone in the evolution of the library. It emphasizes modern JavaScript features, cleaner APIs, performance, and alignment with recent Ethereum protocol advancements.
+```javascript
+import { zeroPadValue } from "ethers";
 
----
+// Example
+const padded = zeroPadValue("0x1234", 32); // 32 bytes = 64 hex chars
+console.log(padded); // "0x0000000000000000000000000000000000000000000000000000000000001234"
 
-## Transition from BigNumber to BigInt
 
-One of the most significant breaking changes in v6 is the shift from the custom `BigNumber` class to native JavaScript `BigInt`.
+```
 
-### Benefits
 
-- **Improved performance** due to native support.
-- **More readable code** with standard operators instead of method chains.
-- **Simplified instantiation** using `BigInt()` or the `n` literal suffix (e.g., `123n`).
+These functions are the fundamental building blocks for correctly encoding data before it is hashed or sent to a smart contract that expects bytes or bytes32 arguments.
 
-### Migration Example
-
-| Operation           | v5 Syntax                             | v6 Syntax           |
-|---------------------|----------------------------------------|----------------------|
-| Create big number   | `ethers.BigNumber.from("100")`        | `BigInt("100")` or `100n` |
-| Add numbers         | `n1.add(n2)`                           | `n1 + n2`            |
 
 ---
+
+# Key Updates and Recent Features (Ethers v6+)
+
+The release of Ethers.js v6 marked a significant evolution of the library, focusing on modern JavaScript features, API clarity, and improved reliability. The project remains actively maintained, consistently incorporating support for the latest Ethereum Improvement Proposals (EIPs) and demonstrating a commitment to long-term viability.
+
+## The Transition from BigNumber to BigInt
+
+The shift from a custom `BigNumber` class to the native JavaScript `BigInt` is the most impactful breaking change in v6.
+
+This change leverages a feature now standard in modern JavaScript environments (ES2020), resulting in improved performance and more intuitive, readable code.
+
+All arithmetic that previously used method calls (e.g., `n1.add(n2)`) must be refactored to use standard operators (e.g., `n1 + n2`), and instantiation now uses the `BigInt()` constructor or the `n` literal suffix.
+
+```javascript
+// v5
+const n1 = ethers.BigNumber.from("100");
+const n2 = ethers.BigNumber.from("50");
+const sum = n1.add(n2);
+
+// v6
+const n1 = BigInt("100");
+const n2 = BigInt("50");
+const sum = n1 + n2;
+```
 
 ## Restructuring of Providers and Utility Functions
 
-To simplify usage and improve discoverability, the **API has been flattened** in v6.
+Ethers.js v6 flattened its API structure for greater simplicity and discoverability. The `ethers.utils` namespace was eliminated, with all its functions now available directly on the root `ethers` object.
 
-### Changes
+Similarly, Provider classes were moved from the `ethers.providers` namespace to be directly importable from `ethers` or the more granular `ethers/providers` path.
 
-- `ethers.utils` namespace is removed.
-- Utility functions are now accessed directly from the `ethers` object.
-- Provider classes were moved out of `ethers.providers`.
+This change necessitates updates to import statements and function calls during migration from v5 but results in a cleaner codebase.
 
-### Updated Import Patterns
+## Migration Quick Reference: Ethers.js v5 to v6
 
-| Feature / Task         | Ethers.js v5 Syntax                          | Ethers.js v6 Syntax                          |
-|------------------------|----------------------------------------------|----------------------------------------------|
-| Unit Parsing           | `ethers.utils.parseEther("1.0")`            | `ethers.parseEther("1.0")`                  |
-| Unit Formatting        | `ethers.utils.formatEther(wei)`             | `ethers.formatEther(wei)`                   |
-| Solidity Hashing       | `ethers.utils.solidityKeccak256(t, v)`      | `ethers.solidityPackedKeccak256(t, v)`      |
-| Hex Conversion         | `ethers.utils.arrayify(hex)`                | `ethers.getBytes(hex)`                      |
-| Browser Provider       | `new ethers.providers.Web3Provider(...)`    | `new Web3Provider(...)`                     |
-| RPC Provider           | `new ethers.providers.JsonRpcProvider(...)` | `new JsonRpcProvider(...)`                  |
-| Constants              | `ethers.constants.AddressZero`              | `ethers.ZeroAddress`                        |
+| Feature / Task      | Ethers.js v5 Syntax                                       | Ethers.js v6 Syntax                         |
+|---------------------|-----------------------------------------------------------|---------------------------------------------|
+| Big Numbers         | `const n = ethers.BigNumber.from("100");`                | `const n = BigInt("100");`                  |
+| Big Number Math     | `const sum = n1.add(n2);`                                 | `const sum = n1 + n2;`                       |
+| Unit Parsing        | `ethers.utils.parseEther("1.0");`                         | `ethers.parseEther("1.0");`                 |
+| Unit Formatting     | `ethers.utils.formatEther(wei);`                          | `ethers.formatEther(wei);`                  |
+| Solidity Hashing    | `ethers.utils.solidityKeccak256(t, v);`                   | `ethers.solidityKeccak256(t, v);`           |
+| Hex Conversion      | `ethers.utils.arrayify(hex);`                             | `ethers.getBytes(hex);`                     |
+| Browser Provider    | `new ethers.providers.Web3Provider(window.ethereum);`     | `new Web3Provider(window.ethereum);`        |
+| RPC Provider        | `new ethers.providers.JsonRpcProvider(url);`              | `new JsonRpcProvider(url);`                 |
+| Constants           | `ethers.constants.AddressZero;`                           | `ethers.ZeroAddress;`                       |
 
----
+## Support for Recent EIPs
 
-## Support for Recent Ethereum Improvement Proposals (EIPs)
+The health and future-proofing of a blockchain library can be measured by its alignment with the core protocol's evolution.
 
-Ethers.js remains at the forefront of Ethereum protocol evolution, with quick integration of finalized EIPs.
+Ethers.js has demonstrated a consistent commitment to incorporating new EIPs rapidly after they are finalised, ensuring developers have the tools to leverage the latest Ethereum features.
 
-### EIP Highlights
+### EIP-4844 (Shard Blob Transactions)
 
-- **EIP-4844 (Shard Blob Transactions)**  
-  Enables broadcasting of "blob" transactions for L2 rollups, lowering data availability costs.
+Support was added for broadcasting EIP-4844 "blob" transactions, which is essential for dApps that interact with Layer 2 rollups and benefit from the reduced data availability costs.
 
-- **EIP-7702 (Set EOA Account Code)**  
-  Introduced in v6.14.0, this EIP enhances the flexibility of EOAs.
+### EIP-7702 (Set EOA Account Code)
 
-- **EIP-6963 (Multi-Injected Provider Discovery)**  
-  Also in v6.14.0, it improves the user experience in browsers with multiple wallet extensions by allowing all providers to be discovered via `BrowserProvider`.
+Support for this new transaction type, which enhances the capabilities of Externally Owned Accounts (EOAs), was added in version 6.14.0.
 
-These additions reinforce Ethers.js as a reliable choice for developers building on Ethereum’s evolving architecture.
+### EIP-6963 (Multi-Injected Provider Discovery)
 
----
+Also added in v6.14.0, this EIP improves the user experience in browsers where multiple wallets (e.g., MetaMask, Rabby, Coinbase Wallet) are installed. The `BrowserProvider` can now discover and present all available wallets to the user.
 
-## Summary of Recent Changelog Highlights (v6.12 – v6.14)
+This rapid integration signals that developers can trust Ethers.js to remain current and provide the necessary tools as the Ethereum ecosystem evolves.
+
+## Summary of Recent Changelog Highlights (v6.12 - v6.14)
 
 ### Stability and Robustness
 
-- Fixed issues in transaction serialization.
-- Improved JSON-RPC encoding.
-- Resolved call stack overflow bugs.
-- Handled uncaught exceptions more gracefully.
+Fixes for low-level issues such as:
 
-### Performance Optimization
+- Transaction serialization
+- JSON-RPC encoding
+- Call stack overflows
+- Uncaught exceptions
 
-- Reduced redundant network calls (e.g., skipping repeated transaction receipt fetches).
+These contribute to a more stable and reliable library suitable for production use.
+
+### Performance Optimisation
+
+Changes such as skipping redundant network requests for transaction receipts demonstrate an ongoing effort to improve the library's efficiency.
 
 ### Ecosystem Integration
 
-- **EtherscanProvider** updated to use their new **v2 API**.
-- **BlockscoutProvider** added to support more block explorer integrations.
+- The `EtherscanProvider` was updated to use their newer v2 API.
+- A `BlockscoutProvider` was introduced, expanding the ecosystem of supported block explorers and services.
 
 ---
 
-## Conclusion
-
-Ethers.js v6 reflects a modern, modular, and developer-friendly library that is well-positioned for long-term maintenance and growth. With strong alignment to Ethereum's technical trajectory, ongoing community support, and a focus on usability and performance, it remains one of the most trusted tools for building production-grade dApps across EVM-compatible chains.
+This pattern of continuous, incremental refinement indicates a project that is well-suited for building and maintaining long-term, production-grade applications on EVM-compatible blockchains.
