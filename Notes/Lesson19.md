@@ -822,7 +822,7 @@ docker run -it trailofbits/eth-security-toolbox
 
 ## ZIION by Halborn
 
-- See Docs [Docs](https://docs.ziion.org/)
+- See [Docs](https://docs.ziion.org/)
 - Download Available
 
 ![Halborn](./images/L19image03.png)
@@ -868,7 +868,7 @@ Or practice your auditing skills by entering their competitions.
 ## Example Audits
 
 ### ERC20 Approval Attack
-
+[ERC20 Approval Attack](https://docs.google.com/document/d/1YLPtQxZu1UAvO9cZ1O2RPXBbT0mooh4DYKjA_jp-RLM/edit)
 Describes the original ERC20 approval exploit. Although the format is unusual, it includes:
 
 - Context
@@ -877,7 +877,7 @@ Describes the original ERC20 approval exploit. Although the format is unusual, i
 - Possible workaround
 
 ### CryptoKitties Empty Fallback
-
+[CryptoKitties Empty Fallback](https://github.com/dapperlabs/cryptokitties-bounty/issues/3)
 Found by **Nick Johnson** during the initial CryptoKitties bug bounty. This example uses a concise format common in bug bounty and audit reports, describing:
 
 - Explanation
@@ -888,6 +888,6 @@ Found by **Nick Johnson** during the initial CryptoKitties bug bounty. This exam
 
 ## Projects Mentioned
 
-- **Freeverse**
-- **Celo**
-- **1Inch**
+- **Freeverse** [Freeverse](https://blog.openzeppelin.com/freeverse-audit)
+- **Celo** [Celo](https://blog.openzeppelin.com/celo-contracts-audit-release-6/)
+- **1Inch** [1Inch](https://blog.openzeppelin.com/1inch-fixed-rate-swap-audit)
