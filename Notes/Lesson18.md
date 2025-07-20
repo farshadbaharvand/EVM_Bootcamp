@@ -800,6 +800,15 @@ Specifications are written to cover all possible inputs using symbolic execution
 
 Uses the **K Framework** and **KEVM** to provide formal executable specifications.
 
-![Runtime](./images/L18image19.png)
+![Runtime1](./images/L18image19.png)
 
-![Runtime](./images/L18image20.png)
+![Runtime2](./images/L18image20.png)
+
+# Resources
+- [K Framework Semantics](https://github.com/kframework/evm-semantics#readme)
+- [The K Tutorial](https://kframework.org/k-distribution/pl-tutorial/)
+- [K Framework Overview](https://runtimeverification.com/blog/k-framework-an-overview/)
+- [Formal Verification article](https://medium.com/@teamtech/formal-verification-of-smart-contracts-trust-in-the-making-2745a60ce9db)
+- [Verification of smart contracts: A survey](https://www.sciencedirect.com/science/article/abs/pii/S1574119220300821)
+- [Formal Verification of Smart Contracts with the K Framework](https://www.apriorit.com/dev-blog/592-formal-verification-with-k-framework)
+- [Solc-verify, a source-level formal verification tool for Solidity smart contracts](https://www.youtube.com/watch?v=1q2gSm3NuQA)
