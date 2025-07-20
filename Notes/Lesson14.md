@@ -131,7 +131,8 @@ This makes it ideal for:
 
 ## Example: Connecting to a Public Ethereum Node
 
-```java script
+```javascript
+
 import { JsonRpcProvider } from "ethers";
 
 // Using Infura
@@ -139,6 +140,7 @@ const provider = new JsonRpcProvider("https://mainnet.infura.io/v3/YOUR_INFURA_P
 
 // Using Alchemy
 const provider = new JsonRpcProvider("https://eth-mainnet.g.alchemy.com/v2/YOUR_ALCHEMY_API_KEY");
+
 ```
 
 ---
