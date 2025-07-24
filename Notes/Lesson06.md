@@ -918,3 +918,5 @@ Before a transaction can be executed, it must pass several **validity checks**:
 | Balance Check                  | Ensures sender can pay gas and transfer value (if applicable)       |
 
 > **Note**: Failing any of the above checks results in the transaction being rejected before execution.
+
+

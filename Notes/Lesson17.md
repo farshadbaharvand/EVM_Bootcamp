@@ -699,3 +699,4 @@ This allowed bypassing signature validation and unauthorized fund transfers.
 - Understanding this encoding allows low-level manipulation of smart contracts.
 
 - In the Poly Network hack, such knowledge enabled an attacker to forge trusted messages and extract $600M across multiple chains.
+
