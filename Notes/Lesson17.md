@@ -570,7 +570,7 @@ This guide provides a step-by-step explanation of how Solidity functions are enc
 
 In Solidity, each function has a **selector** derived from its signature. This selector is a 4-byte identifier used by the Ethereum Virtual Machine (EVM) to determine which function to invoke in a smart contract.
 
-### 🔹 How It's Calculated
+### How It's Calculated
 
 1. Write the function signature as a string:  
    `baz(uint32,bool)`

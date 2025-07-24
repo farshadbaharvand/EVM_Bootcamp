@@ -917,4 +917,4 @@ Before a transaction can be executed, it must pass several **validity checks**:
 | Gas Limit Check                | Confirms transaction can afford execution overhead                  |
 | Balance Check                  | Ensures sender can pay gas and transfer value (if applicable)       |
 
-> ⚠️ **Note**: Failing any of the above checks results in the transaction being rejected before execution.
+> **Note**: Failing any of the above checks results in the transaction being rejected before execution.
