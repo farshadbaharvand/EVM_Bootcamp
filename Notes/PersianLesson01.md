@@ -276,20 +276,7 @@ d62c65bf0bcda32b57b277d9ad9f146e
 
 ## ساختار یک درخت مرکل
 
-```
-        Root Hash
-        /      \
-     HashA     HashB
-     /  \       /  \
- H1   H2     H3   H4
-```
 
- H1، H2، H3 و H4 هش بلوک‌های داده مستقل هستند.
- HashA = hash(H1 + H2)
- HashB = hash(H3 + H4)
- Root = hash(HashA + HashB)
-
----
 
 ![merkel1](./images/L01image07.png)  
 ![merkel2](./images/L01image08.png)
