@@ -188,13 +188,15 @@
 
 Remix یک محیط توسعه یکپارچه (IDE) برای برنامه‌نویسی Solidity است. می‌توان آن را در مرورگر یا روی دسکتاپ اجرا کرد.
 
-- **مرورگر**: [https://remix.ethereum.org/](https://remix.ethereum.org/)
+- **مرورگر**: [remix.ethereum.org](https://remix.ethereum.org/)
 - **دسکتاپ**:  
   برای نصب Remix روی کامپیوتر شخصی، از دستور زیر استفاده کنید:
 
 ~~~~bash
 npm install -g @remix-project/remixd
 ~~~~
+
+
 ![Remix](./images/L02image09.png)
 
 ---
