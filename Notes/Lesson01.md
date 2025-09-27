@@ -13,6 +13,8 @@ Centralised systems, especially in the context of monetary institutions, exhibit
 - **Availability of Banks**  
   Not everyone has consistent or fair access to banking services—especially in underserved or politically unstable regions.
 
+
+
 - **Inflation**  
   Central banks control the money supply, often leading to inflation through over-issuance of currency.
 
